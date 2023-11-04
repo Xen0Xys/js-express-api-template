@@ -8,13 +8,13 @@ if (!fs.existsSync(".env")){
         console.error("An error occurred :", err);
     }
 }
+
 require("dotenv").config();
+const {migrate, seed} = require("../database/utils/db.utils");
 const db = require("../database/models/index");
 const chaiHttp = require("chai-http");
 const app = require("../api/api");
 const chai = require("chai");
-const {migrate, seed} = require("../database/utils/db.utils");
-
 
 before(async function(){
     await migrate();
