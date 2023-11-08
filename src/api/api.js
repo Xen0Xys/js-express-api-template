@@ -30,7 +30,7 @@ function initMiddlewares(app){
 /* eslint-disable no-unused-vars */
 function loadRoutes(app, prefix){
     const router = express.Router();
-    require("./../lib/handlers/routesHandler")(router);
+    require("@handlers/route.handler")(router);
     app.use(prefix, router);
     app.use(function(err, req, res, _){
         if (err instanceof ValidationError)
@@ -38,6 +38,10 @@ function loadRoutes(app, prefix){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
     });
     app.use(({res}) => res.status(StatusCodes.NOT_FOUND).json({message: ReasonPhrases.NOT_FOUND}));
+}
+
+function loadTasks(){
+    require("@handlers/task.handler")();
 }
 
 function loadHttpServer(app, bindAddress, port){
@@ -79,6 +83,7 @@ function startServer(app){
 function initApi(){
     initMiddlewares(app);
     loadRoutes(app, process.env.PREFIX);
+    loadTasks();
     startServer(app);
 }
 
