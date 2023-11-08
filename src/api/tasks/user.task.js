@@ -2,7 +2,7 @@ const {User} = require("@models/index");
 const {Op} = require("sequelize");
 const cron = require("node-cron");
 
-cron.schedule("0 0 0 * * *", async () => {
+cron.schedule("0 0 0 * * *", async() => {
     console.log("Deleting users older than 3 years...");
     const usersToDelete = await User.findAll({
         where: {

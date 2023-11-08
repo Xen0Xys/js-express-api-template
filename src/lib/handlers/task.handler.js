@@ -5,7 +5,7 @@ module.exports = () => {
     const files = loadFiles("./src/api/tasks", true);
     files.forEach(file => {
         try{
-            require(`@tasks/${file}`)
+            require(`@tasks/${file}`);
             console.log(`✅  Task ${file} registered!`);
         } catch (e){
             console.error(`❌  Error while registering task ${file}: ${e}`);
