@@ -1,7 +1,7 @@
 // noinspection SqlNoDataSourceInspection
 
-const db = require("../models/index");
-const loadFiles = require("../../lib/handlers/filesHandler");
+const db = require("@models/index");
+const loadFiles = require("@handlers/file.handler");
 
 async function migrate(){
     console.log("------ Starting migrations ------");
@@ -16,7 +16,7 @@ async function migrate(){
     for(const file of files){
         if(doneMigrations.find(migration => migration.name === file))
             continue;
-        const migration = require(`../../../src/database/migrations/${file}`);
+        const migration = require(`@migrations/${file}`);
         try{
             await migration.up(db.sequelize.getQueryInterface(), db.Sequelize);
             await db.sequelize.query(`INSERT INTO \`SequelizeMeta\` VALUES ('${file}')`);
@@ -36,7 +36,7 @@ async function seed(){
     console.log("------ Starting seeds ------");
     const files = loadFiles("./src/database/seeders", true);
     for(const file of files){
-        const seeder = require(`../../../src/database/seeders/${file}`);
+        const seeder = require(`@seeders/${file}`);
         try{
             await seeder.up(db.sequelize.getQueryInterface(), db.Sequelize);
             console.log(`✅  Seed ${file} done!`);

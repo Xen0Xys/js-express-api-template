@@ -22,6 +22,15 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
+            {
+                firstName: "Foo",
+                lastName: "Bar",
+                countryCode: "FR",
+                email: "foo.bar@example.com",
+                password: await hashPassword("123456"),
+                createdAt: new Date(),
+                updatedAt: new Date(new Date().setFullYear(new Date().getFullYear() - 4))
+            }
         ], {});
     },
 

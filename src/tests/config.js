@@ -1,3 +1,4 @@
+require("module-alias/register");
 const fs = require("fs");
 if (!fs.existsSync(".env")){
     try {
@@ -10,10 +11,10 @@ if (!fs.existsSync(".env")){
 }
 
 require("dotenv").config();
-const {migrate, seed} = require("../database/utils/db.utils");
-const db = require("../database/models/index");
+const {migrate, seed} = require("@utils/db.utils");
 const chaiHttp = require("chai-http");
-const app = require("../api/api");
+const db = require("@models/index");
+const app = require("@api/api");
 const chai = require("chai");
 
 before(async function(){

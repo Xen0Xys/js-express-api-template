@@ -1,6 +1,6 @@
 const {StatusCodes, ReasonPhrases} = require("http-status-codes");
-const {User} = require("../../database/models/index");
-const {getFlag} = require("../services/user.service");
+const {User} = require("@models/index");
+const {getFlag} = require("@services/user.service");
 const {hashPassword} = require("../../lib/utils/encryption");
 
 async function getUser(req, res){

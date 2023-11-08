@@ -1,6 +1,6 @@
-const {getUser, createUser} = require("../../controllers/user.controller");
-const userValidation = require("../../validations/user.validation");
-const jwtAuth = require("../../middlewares/jwt.middleware");
+const {getUser, createUser} = require("@controllers/user.controller");
+const userValidation = require("@validations/user.validation");
+const jwtAuth = require("@middlewares/jwt.middleware");
 const {StatusCodes} = require("http-status-codes");
 const {validate} = require("express-validation");
 

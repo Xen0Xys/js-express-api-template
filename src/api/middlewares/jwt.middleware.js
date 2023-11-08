@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-const jwt = require("jsonwebtoken");
-const {User} = require("../../database/models/index");
 const {StatusCodes} = require("http-status-codes");
+const {User} = require("@models/index");
+const jwt = require("jsonwebtoken");
 
 module.exports = async(req, res, next) => {
     const authHeader = req.headers.authorization;

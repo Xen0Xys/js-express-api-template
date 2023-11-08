@@ -1,7 +1,8 @@
+require("module-alias/register");
 require("dotenv").config();
 
-const database = require("./database/models/index");
-const app = require("./api/api");
+const database = require("@models/index");
+const app = require("@api/api");
 
 module.exports = {
     database,
