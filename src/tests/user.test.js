@@ -46,4 +46,8 @@ describe("User tests", async() => {
         expect(res).to.have.status(StatusCodes.CREATED);
         Joi.assert(res.body, userValidation);
     });
+    it("Error test", async() => {
+        const res = await chai.request(app).get("/api/v1/user/error");
+        expect(res).to.have.status(StatusCodes.OK);
+    });
 });
