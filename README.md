@@ -45,6 +45,7 @@ The project has the following directory structure:
     - `middleware/`: Custom middleware functions.
     - `routes/`: API routes and endpoints.
     - `services/`: Business logic for the API.
+    - `tasks/`: Scheduled tasks.
     - `validations/`: Request validation schemas.
   - `database/`: Configuration files for the project.
     - `config/`: Database configuration files.
