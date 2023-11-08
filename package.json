@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "nodemon src/app.js",
         "start": "node src/app.js",
-        "lint": "eslint . --ext .json,.js --fix",
+        "lint": "eslint . --ext .json,.js",
+        "lint:fix": "eslint . --ext .json,.js --fix",
         "test": "NODE_ENV=test mocha src/tests --exit",
         "test:win": "set NODE_ENV=test&& mocha src/tests --exit",
         "coverage": "nyc pnpm run test",
