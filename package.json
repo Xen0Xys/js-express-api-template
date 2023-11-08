@@ -8,7 +8,9 @@
         "start": "node src/app.js",
         "lint": "eslint . --ext .json,.js --fix",
         "test": "NODE_ENV=test mocha src/tests --exit",
-        "test:win": "set NODE_ENV=test&& mocha src/tests --exit"
+        "test:win": "set NODE_ENV=test&& mocha src/tests --exit",
+        "coverage": "nyc pnpm run test",
+        "coverage:win": "nyc pnpm run test:win"
     },
     "keywords": [],
     "author": "Xen0Xys",
@@ -35,6 +37,7 @@
         "jsonwebtoken": "^9.0.2",
         "morgan": "^1.10.0",
         "mysql2": "^3.6.2",
+        "node-cron": "^3.0.2",
         "sequelize": "^6.33.0",
         "sequelize-joi": "^2.0.1",
         "sqlite3": "^5.1.6"
@@ -45,6 +48,7 @@
         "eslint": "^8.52.0",
         "eslint-plugin-jsonc": "^2.10.0",
         "mocha": "^10.2.0",
-        "nodemon": "^3.0.1"
+        "nodemon": "^3.0.1",
+        "nyc": "^15.1.0"
     }
 }
