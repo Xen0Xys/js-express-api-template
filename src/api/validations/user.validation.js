@@ -16,7 +16,14 @@ const create = {
     })
 };
 
+const remove = {
+    params: Joi.object({
+        id: Joi.number().required()
+    })
+};
+
 module.exports = {
     fetch,
-    create
+    create,
+    remove
 };
