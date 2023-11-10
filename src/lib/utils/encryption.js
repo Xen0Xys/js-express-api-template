@@ -1,13 +1,24 @@
-/* eslint-disable no-undef */
 const argon2 = require("argon2");
 const crypto = require("crypto");
+
+/**
+ * Converts a content to a string
+ * @param content The content to convert
+ * @returns The stringify content
+ */
+function stringify(content){
+    if(!content) return "";
+    if(typeof content !== "string") return content.toString();
+    return content;
+}
 
 /**
  * Gets the SHA-256 sum of a content
  * @param content The content to hash
  * @returns The SHA-256 sum
  */
-async function getSum(content){
+function getSum(content){
+    content = stringify(content);
     return crypto.createHash("sha256").update(content).digest("hex");
 }
 
@@ -18,6 +29,7 @@ async function getSum(content){
  * @returns The hashed content
  */
 async function hashPassword(content, cost = 10){
+    content = stringify(content);
     return await argon2.hash(content, {
         type: argon2.argon2i,
         timeCost: cost
@@ -31,6 +43,7 @@ async function hashPassword(content, cost = 10){
  * @returns True if the content matches the hash, false otherwise
  */
 async function comparePassword(hash, content){
+    content = stringify(content);
     return await argon2.verify(hash, content);
 }
 
@@ -40,6 +53,7 @@ async function comparePassword(hash, content){
  * @returns The encrypted content
  */
 async function encrypt(content){
+    content = stringify(content);
     const salt = crypto.randomBytes(16);
     const key = crypto.pbkdf2Sync(process.env.ENCRYPTION_KEY, salt, 100000, 32, "sha512");
     const iv = crypto.randomBytes(16);
