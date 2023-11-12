@@ -64,6 +64,7 @@
         "@tasks": "./src/api/tasks",
         "@validations": "./src/api/validations",
         "@database": "./src/database",
+        "@config": "./src/database/config",
         "@migrations": "./src/database/migrations",
         "@models": "./src/database/models",
         "@seeders": "./src/database/seeders",

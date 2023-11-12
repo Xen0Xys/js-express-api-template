@@ -10,6 +10,7 @@ module.exports = {
                 countryCode: "FR",
                 email: "john.doe@example.com",
                 password: await hashPassword("123456"),
+                groupId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -19,6 +20,7 @@ module.exports = {
                 countryCode: "FR",
                 email: "jane.doe@example.com",
                 password: await hashPassword("123456"),
+                groupId: 2,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -28,6 +30,7 @@ module.exports = {
                 countryCode: "FR",
                 email: "foo.bar@example.com",
                 password: await hashPassword("123456"),
+                groupId: 2,
                 createdAt: new Date(),
                 updatedAt: new Date(new Date().setFullYear(new Date().getFullYear() - 4))
             }

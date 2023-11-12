@@ -1,7 +1,5 @@
 const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
-const path = require("path");
-const basename = path.basename(__filename);
+const config = require("@config/config.json")[env];
 const Sequelize = require("sequelize");
 const fs = require("fs");
 const db = {};
@@ -11,7 +9,7 @@ if (config.use_env_variable)
     sequelize = new Sequelize(process.env[config.use_env_variable], config);
 else {
     if(config.storage)
-        config.storage = config.storage.split("../../")[1];
+        config.storage = config.storage.split("/").slice(-1)[0];
     sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
@@ -19,18 +17,17 @@ const {sequelizeJoi} = require("sequelize-joi");
 sequelizeJoi(sequelize);
 
 console.log("------ Loading models ------");
-fs.readdirSync(__dirname)
+fs.readdirSync(__dirname + "/models")
     .filter(file => {
         return (
             file.indexOf(".") !== 0 &&
-            file !== basename &&
             file.slice(-3) === ".js" &&
             file.indexOf(".test.js") === -1
         );
     })
     .forEach(file => {
         try{
-            const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+            const model = require(`@models/${file}`)(sequelize, Sequelize.DataTypes);
             db[model.name] = model;
             console.log(`✅  Model ${file} registered!`);
         }catch (e){

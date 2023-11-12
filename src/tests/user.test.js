@@ -9,6 +9,7 @@ const testUser = {
     lastName: "User",
     countryCode: "US",
     email: "test.email@example.fr",
+    groupId: 1,
     password: "123456"
 };
 const userValidation = Joi.object({
@@ -18,6 +19,7 @@ const userValidation = Joi.object({
     email: Joi.string().email().required(),
     countryCode: Joi.string(),
     flag: Joi.string(),
+    groupId: Joi.number().required(),
     createdAt: Joi.date().iso().required(),
     updatedAt: Joi.date().iso().required(),
 });

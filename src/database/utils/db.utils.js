@@ -1,6 +1,6 @@
 // noinspection SqlNoDataSourceInspection
 
-const db = require("@models/index");
+const db = require("@database/index");
 const loadFiles = require("@handlers/file.handler");
 
 async function migrate(){

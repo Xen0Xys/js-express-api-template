@@ -10,19 +10,34 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             firstName: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: false
             },
             lastName: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: false
             },
             countryCode: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: false
             },
             email: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: false
             },
             password: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            groupId: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                references: {
+                    model: "Groups",
+                    key: "id"
+                },
+                onUpdate: "CASCADE",
+                onDelete: "SET NULL"
             },
             createdAt: {
                 allowNull: false,

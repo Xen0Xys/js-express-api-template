@@ -1,5 +1,5 @@
 const {StatusCodes, ReasonPhrases} = require("http-status-codes");
-const {User} = require("@models/index");
+const {User} = require("@database/index");
 const {getFlag} = require("@services/user.service");
 const {hashPassword} = require("../../lib/utils/encryption");
 
@@ -19,10 +19,10 @@ async function getUser(req, res){
 }
 
 async function createUser(req, res){
-    const {firstName, lastName, countryCode, email, password} = req.body;
+    const {firstName, lastName, countryCode, email, password, groupId} = req.body;
     const passwordHash = await hashPassword(password);
     try{
-        const user = await User.create({firstName, lastName, countryCode, email, password: passwordHash});
+        const user = await User.create({firstName, lastName, countryCode, email, password: passwordHash, groupId});
         const jsonUser = user.toJSON();
         jsonUser.flag = await getFlag(jsonUser.countryCode);
         delete jsonUser.password;
