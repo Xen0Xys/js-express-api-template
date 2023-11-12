@@ -23,8 +23,9 @@ function initMiddlewares(app){
         standardHeaders: true,
         legacyHeaders: false,
     }));
-    app.use(morgan("dev"));
     app.use(compression());
+    if(process.env.NODE_ENV !== "test")
+        app.use(morgan("dev"));
 }
 
 /* eslint-disable no-unused-vars */
