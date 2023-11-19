@@ -1,14 +1,16 @@
 const loadFiles = require("./file.handler");
+const {AlignmentEnum} = require("ascii-table3");
 
 module.exports = (router) => {
-    console.log("------ Loading routes ------");
+    const table = require("@utils/table")("Routes", ["Route", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
     const files = loadFiles("./src/api/routes/v1", true);
     files.forEach(file => {
         try{
             require(`@routes/v1/${file}`)(router);
-            console.log(`✅  Route ${file} registered!`);
+            table.addRow(file, "✅", "");
         } catch (e){
-            console.error(`❌  Error while registering route ${file}: ${e}`);
+            table.addRow(file, "❌", e);
         }
     });
+    console.log(table.toString().slice(0, -1));
 };

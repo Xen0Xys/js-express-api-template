@@ -1,14 +1,16 @@
 const loadFiles = require("./file.handler");
+const {AlignmentEnum} = require("ascii-table3");
 
 module.exports = () => {
-    console.log("------ Loading tasks ------");
+    const table = require("@utils/table")("Tasks", ["Task", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
     const files = loadFiles("./src/api/tasks", true);
     files.forEach(file => {
         try{
             require(`@tasks/${file}`);
-            console.log(`✅  Task ${file} registered!`);
+            table.addRow(file, "✅", "");
         } catch (e){
-            console.error(`❌  Error while registering task ${file}: ${e}`);
+            table.addRow(file, "❌", e);
         }
     });
+    console.log(table.toString().slice(0, -1));
 };

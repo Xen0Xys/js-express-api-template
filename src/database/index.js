@@ -14,9 +14,11 @@ else {
 }
 
 const {sequelizeJoi} = require("sequelize-joi");
+const {AlignmentEnum} = require("ascii-table3");
 sequelizeJoi(sequelize);
 
-console.log("------ Loading models ------");
+const createTable = require("@utils/table");
+let table = createTable("Models", ["Model", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
 fs.readdirSync(__dirname + "/models")
     .filter(file => {
         return (
@@ -29,22 +31,24 @@ fs.readdirSync(__dirname + "/models")
         try{
             const model = require(`@models/${file}`)(sequelize, Sequelize.DataTypes);
             db[model.name] = model;
-            console.log(`✅  Model ${file} registered!`);
+            table.addRow(file, "✅", "");
         }catch (e){
-            console.log(`❌  Error loading model ${file}: ${e.message}`);
+            table.addRow(file, "❌", e);
         }
     });
+console.log(table.toString().slice(0, -1));
 
-console.log("------ Loading associations ------");
+table = createTable("Associations", ["Association", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
 Object.keys(db).forEach(modelName => {
     try{
         if(db[modelName].associate)
             db[modelName].associate(db);
-        console.log(`✅  ${modelName} associations registered!`);
+        table.addRow(modelName, "✅", "");
     }catch (e){
-        console.log(`❌  Error loading ${modelName} associations: ${e.message}`);
+        table.addRow(modelName, "❌", e);
     }
 });
+console.log(table.toString().slice(0, -1));
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
