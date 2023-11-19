@@ -30,7 +30,7 @@ Follow these steps to get started with this project:
       ```
    2. For production:
        ```bash
-      pnpm start
+      pnpm run start
       ```
 
 Your API will be available at `http://localhost:3000`.
