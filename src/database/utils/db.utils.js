@@ -2,9 +2,10 @@
 
 const db = require("@database/index");
 const loadFiles = require("@handlers/file.handler");
+const {AlignmentEnum} = require("ascii-table3");
 
 async function migrate(){
-    console.log("------ Starting migrations ------");
+    const table = require("@utils/table")("Migrations", ["Migration", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT])
     let doneMigrations;
     try{
         doneMigrations = await db.sequelize.query("SELECT name FROM `SequelizeMeta`", {type: db.sequelize.QueryTypes.SELECT});
@@ -20,35 +21,37 @@ async function migrate(){
         try{
             await migration.up(db.sequelize.getQueryInterface(), db.Sequelize);
             await db.sequelize.query(`INSERT INTO \`SequelizeMeta\` VALUES ('${file}')`);
-            console.log(`✅  Migration ${file} done!`);
+            table.addRow(file, "✅", "");
         }catch (e){
             try{
-                console.error(`❌  Error while migrating ${file}: ${e}`);
+                table.addRow(file, "❌", e);
                 await migration.down(db.sequelize.getQueryInterface(), db.Sequelize);
             }catch (e){
-                console.error(`❌  Error while un-migrating ${file}: ${e}`);
+                table.addRow(file, "❌", e);
             }
         }
     }
+    console.log(table.toString().slice(0, -1));
 }
 
 async function seed(){
-    console.log("------ Starting seeds ------");
+    const table = require("@utils/table")("Seeds", ["Seed", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT])
     const files = loadFiles("./src/database/seeders", true);
     for(const file of files){
         const seeder = require(`@seeders/${file}`);
         try{
             await seeder.up(db.sequelize.getQueryInterface(), db.Sequelize);
-            console.log(`✅  Seed ${file} done!`);
+            table.addRow(file, "✅", "");
         }catch (e){
             try{
-                console.error(`❌  Error while seeding ${file}: ${e}`);
+                table.addRow(file, "❌", e);
                 await seeder.down(db.sequelize.getQueryInterface(), db.Sequelize);
             }catch (e){
-                console.error(`❌  Error while un-seeding ${file}: ${e}`);
+                table.addRow(file, "❌", e);
             }
         }
     }
+    console.log(table.toString().slice(0, -1));
 }
 
 module.exports = {
