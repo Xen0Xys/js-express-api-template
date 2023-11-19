@@ -11,7 +11,7 @@ if (!fs.existsSync(".env")){
 }
 
 require("dotenv").config();
-const {migrate, seed} = require("@utils/db.utils");
+const {migrate, seed} = require("@utils:db/db.utils");
 const chaiHttp = require("chai-http");
 const db = require("@database/index");
 const app = require("@api/api");

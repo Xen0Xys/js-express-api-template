@@ -68,7 +68,8 @@
         "@migrations": "./src/database/migrations",
         "@models": "./src/database/models",
         "@seeders": "./src/database/seeders",
-        "@utils": "./src/database/utils",
+        "@utils:db": "./src/database/utils",
+        "@utils": "./src/lib/utils",
         "@tests": "./src/tests",
         "@handlers": "./src/lib/handlers"
     }
