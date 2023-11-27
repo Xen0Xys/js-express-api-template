@@ -36,7 +36,7 @@ fs.readdirSync(__dirname + "/models")
             table.addRow(file, "❌", e);
         }
     });
-console.log(table.toString().slice(0, -1));
+console.log(table.toString());
 
 table = createTable("Associations", ["Association", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
 Object.keys(db).forEach(modelName => {
@@ -48,7 +48,7 @@ Object.keys(db).forEach(modelName => {
         table.addRow(modelName, "❌", e);
     }
 });
-console.log(table.toString().slice(0, -1));
+console.log(table.toString());
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

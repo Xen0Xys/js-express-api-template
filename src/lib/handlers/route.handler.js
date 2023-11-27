@@ -12,5 +12,5 @@ module.exports = (router) => {
             table.addRow(file, "❌", e);
         }
     });
-    console.log(table.toString().slice(0, -1));
+    console.log(table.toString());
 };
