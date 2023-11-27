@@ -35,42 +35,42 @@ describe("Hash tests", async() => {
     it("Hash password", async() => {
         const hash = await hashPassword(content);
         expect(hash).to.be.a("string");
-        expect(hash).to.have.lengthOf(97);
+        expect(hash).to.have.lengthOf(98);
         const compare = await comparePassword(hash, content);
         expect(compare).to.be.true;
     });
     it("Hash password with empty content", async() => {
         const hash = await hashPassword("");
         expect(hash).to.be.a("string");
-        expect(hash).to.have.lengthOf(97);
+        expect(hash).to.have.lengthOf(98);
         const compare = await comparePassword(hash, "");
         expect(compare).to.be.true;
     });
     it("Hash password with null content", async() => {
         const hash = await hashPassword(null);
         expect(hash).to.be.a("string");
-        expect(hash).to.have.lengthOf(97);
+        expect(hash).to.have.lengthOf(98);
         const compare = await comparePassword(hash, null);
         expect(compare).to.be.true;
     });
     it("Hash password with undefined content", async() => {
         const hash = await hashPassword(undefined);
         expect(hash).to.be.a("string");
-        expect(hash).to.have.lengthOf(97);
+        expect(hash).to.have.lengthOf(98);
         const compare = await comparePassword(hash, undefined);
         expect(compare).to.be.true;
     });
     it("Hash password with no content", async() => {
         const hash = await hashPassword();
         expect(hash).to.be.a("string");
-        expect(hash).to.have.lengthOf(97);
+        expect(hash).to.have.lengthOf(98);
         const compare = await comparePassword(hash);
         expect(compare).to.be.true;
     });
     it("Hash password with number content", async() => {
         const hash = await hashPassword(123);
         expect(hash).to.be.a("string");
-        expect(hash).to.have.lengthOf(97);
+        expect(hash).to.have.lengthOf(98);
         const compare = await comparePassword(hash, 123);
         expect(compare).to.be.true;
     });

@@ -31,7 +31,7 @@ function getSum(content){
 async function hashPassword(content, cost = 10){
     content = stringify(content);
     return await argon2.hash(content, {
-        type: argon2.argon2i,
+        type: argon2.argon2id,
         timeCost: cost
     });
 }
