@@ -54,18 +54,18 @@ async function comparePassword(hash, content){
  * @param timeCost The time cost
  * @returns The encrypted content
  */
-async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000) {
+async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
     content = stringify(content);
     const salt = crypto.randomBytes(32);
-    const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, 'sha512');
+    const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, "sha512");
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-cbc', key.subarray(0, 32), iv);
-    let encrypted = cipher.update(content, 'utf-8', 'hex');
-    encrypted += cipher.final('hex');
-    const hmac = crypto.createHmac('sha256', key.subarray(32));
-    hmac.update(`${salt.toString('hex')}:${iv.toString('hex')}:${encrypted}`);
-    const digest = hmac.digest('hex');
-    return `${salt.toString('hex')}:${iv.toString('hex')}:${encrypted}:${digest}`;
+    const cipher = crypto.createCipheriv("aes-256-cbc", key.subarray(0, 32), iv);
+    let encrypted = cipher.update(content, "utf-8", "hex");
+    encrypted += cipher.final("hex");
+    const hmac = crypto.createHmac("sha256", key.subarray(32));
+    hmac.update(`${salt.toString("hex")}:${iv.toString("hex")}:${encrypted}`);
+    const digest = hmac.digest("hex");
+    return `${salt.toString("hex")}:${iv.toString("hex")}:${encrypted}:${digest}`;
 }
 
 /**
@@ -75,55 +75,55 @@ async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_E
  * @param timeCost The time cost
  * @returns The decrypted content
  */
-async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000) {
+async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
     const [saltString, ivString, encryptedString, digest] = encryptedContent.split(":");
-    const salt = Buffer.from(saltString, 'hex');
-    const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, 'sha512');
-    const iv = Buffer.from(ivString, 'hex');
-    const hmac = crypto.createHmac('sha256', key.subarray(32));
+    const salt = Buffer.from(saltString, "hex");
+    const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, "sha512");
+    const iv = Buffer.from(ivString, "hex");
+    const hmac = crypto.createHmac("sha256", key.subarray(32));
     hmac.update(`${saltString}:${ivString}:${encryptedString}`);
-    const calculatedDigest = hmac.digest('hex');
+    const calculatedDigest = hmac.digest("hex");
     if (calculatedDigest !== digest)
-        throw new Error('Integrity check failed');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key.subarray(0, 32), iv);
-    let decrypted = decipher.update(encryptedString, 'hex', 'utf-8');
-    decrypted += decipher.final('utf-8');
+        throw new Error("Integrity check failed");
+    const decipher = crypto.createDecipheriv("aes-256-cbc", key.subarray(0, 32), iv);
+    let decrypted = decipher.update(encryptedString, "hex", "utf-8");
+    decrypted += decipher.final("utf-8");
     return decrypted;
 }
 
-function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY) {
-    return crypto.generateKeyPairSync('rsa', {
+function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+    return crypto.generateKeyPairSync("rsa", {
         modulusLength: 4096,
         publicKeyEncoding: {
-            type: 'spki',
-            format: 'pem'
+            type: "spki",
+            format: "pem"
         },
         privateKeyEncoding: {
-            type: 'pkcs8',
-            format: 'pem',
-            cipher: 'aes-256-cbc',
+            type: "pkcs8",
+            format: "pem",
+            cipher: "aes-256-cbc",
             passphrase: privateEncryptionKey
         }
     });
 }
 
-function encryptAsymmetric(content, publicKey) {
-    const buffer = Buffer.from(stringify(content), 'utf-8');
+function encryptAsymmetric(content, publicKey){
+    const buffer = Buffer.from(stringify(content), "utf-8");
     const encrypted = crypto.publicEncrypt({
         key: publicKey,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING
     }, buffer);
-    return encrypted.toString('base64');
+    return encrypted.toString("base64");
 }
 
-function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY) {
-    const buffer = Buffer.from(encryptedContent, 'base64');
+function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+    const buffer = Buffer.from(encryptedContent, "base64");
     const decrypted = crypto.privateDecrypt({
         key: privateKey,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
         passphrase: privateEncryptionKey
     }, buffer);
-    return decrypted.toString('utf-8');
+    return decrypted.toString("utf-8");
 }
 
 module.exports = {

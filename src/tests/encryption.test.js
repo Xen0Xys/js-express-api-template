@@ -148,7 +148,7 @@ describe("Asymmetric encryption tests", async() => {
         expect(keyPair.privateKey).to.have.lengthOf(3434);
     }).timeout(3000);
     it("Encrypt content", async() => {
-        const encrypted = encryptAsymmetric(content, keyPair.publicKey)
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
         expect(decrypted).to.be.a("string");
@@ -156,7 +156,7 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.equal(content);
     });
     it("Encrypt content with empty content", async() => {
-        const encrypted = encryptAsymmetric("", keyPair.publicKey)
+        const encrypted = encryptAsymmetric("", keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         expect(encrypted).to.have.lengthOf(684);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
@@ -165,7 +165,7 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.equal("");
     });
     it("Encrypt content with null content", async() => {
-        const encrypted = encryptAsymmetric(null, keyPair.publicKey)
+        const encrypted = encryptAsymmetric(null, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         expect(encrypted).to.have.lengthOf(684);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
@@ -174,7 +174,7 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.equal("");
     });
     it("Encrypt content with undefined content", async() => {
-        const encrypted = encryptAsymmetric(undefined, keyPair.publicKey)
+        const encrypted = encryptAsymmetric(undefined, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         expect(encrypted).to.have.lengthOf(684);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
@@ -183,7 +183,7 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.equal("");
     });
     it("Encrypt content with no content", async() => {
-        const encrypted = encryptAsymmetric(undefined, keyPair.publicKey)
+        const encrypted = encryptAsymmetric(undefined, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         expect(encrypted).to.have.lengthOf(684);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
@@ -192,7 +192,7 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.equal("");
     });
     it("Encrypt content with number content", async() => {
-        const encrypted = encryptAsymmetric(123, keyPair.publicKey)
+        const encrypted = encryptAsymmetric(123, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         expect(encrypted).to.have.lengthOf(684);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
