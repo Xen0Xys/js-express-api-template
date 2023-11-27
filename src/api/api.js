@@ -10,8 +10,8 @@ function initMiddlewares(app){
     const cors = require("cors");
     const helmet = require("helmet");
     const rateLimit = require("express-rate-limit");
-    const morgan = require("morgan");
     const compression = require("compression");
+    const logger = require("@middlewares/logger.middleware");
 
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
@@ -25,7 +25,7 @@ function initMiddlewares(app){
     }));
     app.use(compression());
     if(process.env.NODE_ENV !== "test")
-        app.use(morgan("dev"));
+        app.use(logger);
 }
 
 /* eslint-disable no-unused-vars */
