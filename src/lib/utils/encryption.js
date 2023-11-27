@@ -91,6 +91,11 @@ async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SY
     return decrypted;
 }
 
+/**
+ * Generates a key pair
+ * @param privateEncryptionKey The private encryption key
+ * @returns {KeyPairSyncResult<string, string>} The key pair
+ */
 function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
     return crypto.generateKeyPairSync("rsa", {
         modulusLength: 4096,
@@ -107,6 +112,12 @@ function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTIO
     });
 }
 
+/**
+ * Encrypts a content with an asymmetric key
+ * @param content The content to encrypt
+ * @param publicKey The public key
+ * @returns {string} The encrypted content
+ */
 function encryptAsymmetric(content, publicKey){
     const buffer = Buffer.from(stringify(content), "utf-8");
     const encrypted = crypto.publicEncrypt({
@@ -116,6 +127,13 @@ function encryptAsymmetric(content, publicKey){
     return encrypted.toString("base64");
 }
 
+/**
+ * Decrypts a content with an asymmetric key
+ * @param encryptedContent The encrypted content
+ * @param privateKey The private key
+ * @param privateEncryptionKey The private encryption key
+ * @returns {string} The decrypted content
+ */
 function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
     const buffer = Buffer.from(encryptedContent, "base64");
     const decrypted = crypto.privateDecrypt({
