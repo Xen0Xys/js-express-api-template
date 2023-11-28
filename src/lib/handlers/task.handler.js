@@ -7,7 +7,7 @@ export default async() => {
     const files = loadFiles("./src/api/tasks", true);
     for(const file of files){
         try{
-            await import(`#tasks/${file}`)
+            await import(`#tasks/${file}`);
             table.addRow(file, "✅", "");
         } catch (e){
             table.addRow(file, "❌", e);

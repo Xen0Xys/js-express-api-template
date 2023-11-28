@@ -1,11 +1,10 @@
 const env = process.env.NODE_ENV || "development";
-import configImport from "#config/config.json" assert { type: "json" };
+import fs from "fs";
+const config = JSON.parse(fs.readFileSync("./src/database/config/config.json"))[env];
 import {AlignmentEnum} from "ascii-table3";
 import {sequelizeJoi} from "sequelize-joi";
 import createTable from "#utils/table";
 import Sequelize from "sequelize";
-import fs from "fs";
-const config = configImport[env];
 const db = {};
 
 let sequelize;
@@ -26,15 +25,15 @@ for (const file1 of fs.readdirSync("./src/database/models")
             file.slice(-3) === ".js" &&
             file.indexOf(".test.js") === -1
         );
-    })) {
-        try{
-            const model = (await import(`#models/${file1}`)).default(sequelize, Sequelize.DataTypes);
-            db[model.name] = model;
-            table.addRow(file1, "✅", "");
-        }catch (e){
-            table.addRow(file1, "❌", e);
-        }
+    })){
+    try{
+        const model = (await import(`#models/${file1}`)).default(sequelize, Sequelize.DataTypes);
+        db[model.name] = model;
+        table.addRow(file1, "✅", "");
+    }catch (e){
+        table.addRow(file1, "❌", e);
     }
+}
 console.log(table.toString());
 
 table = createTable("Associations", ["Association", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);

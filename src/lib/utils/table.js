@@ -7,4 +7,4 @@ export default (name, headings, alignments) => {
         table.setAlign.bind(table)(index + 1, alignment);
     });
     return table;
-}
+};

@@ -1,9 +1,9 @@
-import fs from 'fs';
-import db from '#database/index';
-import app from '#api/api';
-import { migrate, seed } from '#utils:db/db.utils';
-import chaiHttp from 'chai-http';
-import chai from 'chai';
+import fs from "fs";
+import db from "#database/index";
+import app from "#api/api";
+import {migrate, seed} from "#utils:db/db.utils";
+import chaiHttp from "chai-http";
+import chai from "chai";
 if (!fs.existsSync(".env")){
     try {
         const envExampleContent = fs.readFileSync(".env.example", "utf8");

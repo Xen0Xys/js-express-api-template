@@ -10,7 +10,7 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import compression from "compression";
-import logger from "#middlewares/logger.middleware"
+import logger from "#middlewares/logger.middleware";
 
 function initMiddlewares(app){
     app.use(express.json());
