@@ -1,7 +1,7 @@
 /*eslint-disable no-unused-vars*/
-const {hashPassword} = require("../../lib/utils/encryption");
+import {hashPassword} from "#utils/encryption";
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up(queryInterface, Sequelize){
         return queryInterface.bulkInsert("users", [
             {

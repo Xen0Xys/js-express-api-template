@@ -1,9 +1,10 @@
-const {StatusCodes, ReasonPhrases} = require("http-status-codes");
-const {User} = require("@database/index");
-const {getFlag} = require("@services/user.service");
-const {hashPassword} = require("../../lib/utils/encryption");
+import {StatusCodes, ReasonPhrases} from "http-status-codes";
+import db from "#database/index";
+import {getFlag} from "#services/user.service";
+import {hashPassword} from "#utils/encryption";
+const User = db.User;
 
-async function getUser(req, res){
+export async function getUser(req, res){
     const userId = req.params.id;
     try{
         const user = await User.findOne({where: {id: userId}});
@@ -18,7 +19,7 @@ async function getUser(req, res){
     }
 }
 
-async function createUser(req, res){
+export async function createUser(req, res){
     const {firstName, lastName, countryCode, email, password, groupId} = req.body;
     const passwordHash = await hashPassword(password);
     try{
@@ -32,7 +33,7 @@ async function createUser(req, res){
     }
 }
 
-async function removeUser(req, res){
+export async function removeUser(req, res){
     const id = req.params.id;
     try {
         const user = await User.findOne({where: {id}});
@@ -45,7 +46,7 @@ async function removeUser(req, res){
     }
 }
 
-async function getUsers(req, res){
+export async function getUsers(req, res){
     try{
         const users = await User.findAll();
         const jsonUsers = users.map(user => {
@@ -58,11 +59,3 @@ async function getUsers(req, res){
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
     }
 }
-
-module.exports = {
-    getUser,
-    createUser,
-    removeUser,
-    getUsers
-};
-

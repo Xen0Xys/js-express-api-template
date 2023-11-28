@@ -1,12 +1,12 @@
-const argon2 = require("argon2");
-const crypto = require("crypto");
+import argon2 from "argon2";
+import crypto from "crypto";
 
 /**
  * Converts a content to a string
  * @param content The content to convert
  * @returns The stringify content
  */
-function stringify(content){
+export function stringify(content){
     if(!content) return "";
     if(typeof content !== "string") return content.toString();
     return content;
@@ -17,7 +17,7 @@ function stringify(content){
  * @param content The content to hash
  * @returns The SHA-256 sum
  */
-function getSum(content){
+export function getSum(content){
     content = stringify(content);
     return crypto.createHash("sha256").update(content).digest("hex");
 }
@@ -28,7 +28,7 @@ function getSum(content){
  * @param cost The cost of the hash (default: 10)
  * @returns The hashed content
  */
-async function hashPassword(content, cost = 10){
+export async function hashPassword(content, cost = 10){
     content = stringify(content);
     return await argon2.hash(content, {
         type: argon2.argon2id,
@@ -42,7 +42,7 @@ async function hashPassword(content, cost = 10){
  * @param content The plain text content
  * @returns True if the content matches the hash, false otherwise
  */
-async function comparePassword(hash, content){
+export async function comparePassword(hash, content){
     content = stringify(content);
     return await argon2.verify(hash, content);
 }
@@ -54,7 +54,7 @@ async function comparePassword(hash, content){
  * @param timeCost The time cost
  * @returns The encrypted content
  */
-async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
+export async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
     content = stringify(content);
     const salt = crypto.randomBytes(32);
     const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, "sha512");
@@ -75,7 +75,7 @@ async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_E
  * @param timeCost The time cost
  * @returns The decrypted content
  */
-async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
+export async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
     const [saltString, ivString, encryptedString, digest] = encryptedContent.split(":");
     const salt = Buffer.from(saltString, "hex");
     const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, "sha512");
@@ -96,7 +96,7 @@ async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SY
  * @param privateEncryptionKey The private encryption key
  * @returns {KeyPairSyncResult<string, string>} The key pair
  */
-function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+export function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
     return crypto.generateKeyPairSync("rsa", {
         modulusLength: 4096,
         publicKeyEncoding: {
@@ -118,7 +118,7 @@ function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTIO
  * @param publicKey The public key
  * @returns {string} The encrypted content
  */
-function encryptAsymmetric(content, publicKey){
+export function encryptAsymmetric(content, publicKey){
     const buffer = Buffer.from(stringify(content), "utf-8");
     const encrypted = crypto.publicEncrypt({
         key: publicKey,
@@ -134,7 +134,7 @@ function encryptAsymmetric(content, publicKey){
  * @param privateEncryptionKey The private encryption key
  * @returns {string} The decrypted content
  */
-function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+export function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
     const buffer = Buffer.from(encryptedContent, "base64");
     const decrypted = crypto.privateDecrypt({
         key: privateKey,
@@ -143,14 +143,3 @@ function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = 
     }, buffer);
     return decrypted.toString("utf-8");
 }
-
-module.exports = {
-    getSum,
-    hashPassword,
-    comparePassword,
-    encryptSymmetric,
-    decryptSymmetric,
-    generateKeyPair,
-    encryptAsymmetric,
-    decryptAsymmetric
-};

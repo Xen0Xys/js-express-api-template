@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "fs";
 
 /**
  * Check if the given path is a directory.
@@ -21,7 +21,7 @@ function isJSFile(path){
  * @param path Folder's path
  * @param subFiles Should check sub folders?
  */
-function loadFiles(path, subFiles){
+export default function loadFiles(path, subFiles){
     const files = [];
     fs.readdirSync(path).forEach((file) => {
         if (subFiles && isDirectory(`${path}/${file}`))
@@ -31,5 +31,3 @@ function loadFiles(path, subFiles){
     });
     return files;
 }
-
-module.exports = loadFiles;

@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+import chalk from "chalk";
 
 function getStatusColor(statusCode){
     switch (Math.floor(statusCode / 100)){
@@ -15,7 +15,7 @@ function getStatusColor(statusCode){
     }
 }
 
-module.exports = async(req, res, next) => {
+export default (req, res, next) => {
     const startTime = Date.now();
     res.on("finish", () => {
         const method = req.method;

@@ -1,6 +1,7 @@
-const {User} = require("@database/index");
-const {Op} = require("sequelize");
-const cron = require("node-cron");
+import {Op} from "sequelize";
+import cron from "node-cron";
+import db from "#database/index";
+const User = db.User;
 
 cron.schedule("0 0 0 * * *", async() => {
     console.log("Deleting users older than 3 years...");

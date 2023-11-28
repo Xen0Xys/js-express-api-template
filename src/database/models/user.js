@@ -1,9 +1,7 @@
 /*eslint-disable no-unused-vars*/
-const {
-    Model
-} = require("sequelize");
-const {Joi} = require("sequelize-joi");
-module.exports = (sequelize, DataTypes) => {
+import {Model} from "sequelize";
+import {Joi} from "sequelize-joi";
+export default (sequelize, DataTypes) => {
     class User extends Model{
     /**
      * Helper method for defining associations.

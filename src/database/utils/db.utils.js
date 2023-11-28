@@ -1,11 +1,12 @@
 // noinspection SqlNoDataSourceInspection
 
-const db = require("@database/index");
-const loadFiles = require("@handlers/file.handler");
-const {AlignmentEnum} = require("ascii-table3");
+import db from "#database/index";
+import loadFiles from "#handlers/file.handler";
+import {AlignmentEnum} from "ascii-table3";
+import createTable from "#utils/table";
 
-async function migrate(){
-    const table = require("@utils/table")("Migrations", ["Migration", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
+export async function migrate(){
+    const table = createTable("Migrations", ["Migration", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
     let doneMigrations;
     try{
         doneMigrations = await db.sequelize.query("SELECT name FROM `SequelizeMeta`", {type: db.sequelize.QueryTypes.SELECT});
@@ -17,7 +18,7 @@ async function migrate(){
     for(const file of files){
         if(doneMigrations.find(migration => migration.name === file))
             continue;
-        const migration = require(`@migrations/${file}`);
+        const migration = (await import(`#migrations/${file}`)).default;
         try{
             await migration.up(db.sequelize.getQueryInterface(), db.Sequelize);
             await db.sequelize.query(`INSERT INTO \`SequelizeMeta\` VALUES ('${file}')`);
@@ -34,11 +35,11 @@ async function migrate(){
     console.log(table.toString().slice(0, -1));
 }
 
-async function seed(){
-    const table = require("@utils/table")("Seeds", ["Seed", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
+export async function seed(){
+    const table = createTable("Seeds", ["Seed", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
     const files = loadFiles("./src/database/seeders", true);
     for(const file of files){
-        const seeder = require(`@seeders/${file}`);
+        const seeder = (await import(`#seeders/${file}`)).default;
         try{
             await seeder.up(db.sequelize.getQueryInterface(), db.Sequelize);
             table.addRow(file, "✅", "");
@@ -53,8 +54,3 @@ async function seed(){
     }
     console.log(table.toString().slice(0, -1));
 }
-
-module.exports = {
-    migrate,
-    seed
-};

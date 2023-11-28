@@ -1,4 +1,4 @@
-const {Joi} = require("express-validation");
+import {Joi} from "express-validation";
 
 const fetch = {
     params: Joi.object({
@@ -23,7 +23,7 @@ const remove = {
     })
 };
 
-module.exports = {
+export default {
     fetch,
     create,
     remove

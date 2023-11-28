@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up(queryInterface, Sequelize){
         await queryInterface.createTable("Users", {
             id: {

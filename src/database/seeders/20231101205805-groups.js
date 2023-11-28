@@ -1,6 +1,6 @@
 /*eslint-disable no-unused-vars*/
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up(queryInterface, Sequelize){
         return queryInterface.bulkInsert("groups", [
             {

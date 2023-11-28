@@ -1,7 +1,11 @@
 const env = process.env.NODE_ENV || "development";
-const config = require("@config/config.json")[env];
-const Sequelize = require("sequelize");
-const fs = require("fs");
+import configImport from "#config/config.json" assert { type: "json" };
+import {AlignmentEnum} from "ascii-table3";
+import {sequelizeJoi} from "sequelize-joi";
+import createTable from "#utils/table";
+import Sequelize from "sequelize";
+import fs from "fs";
+const config = configImport[env];
 const db = {};
 
 let sequelize;
@@ -12,30 +16,25 @@ else {
         config.storage = config.storage.split("/").slice(-1)[0];
     sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
-
-const {sequelizeJoi} = require("sequelize-joi");
-const {AlignmentEnum} = require("ascii-table3");
 sequelizeJoi(sequelize);
 
-const createTable = require("@utils/table");
 let table = createTable("Models", ["Model", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
-fs.readdirSync(__dirname + "/models")
+for (const file1 of fs.readdirSync("./src/database/models")
     .filter(file => {
         return (
             file.indexOf(".") !== 0 &&
             file.slice(-3) === ".js" &&
             file.indexOf(".test.js") === -1
         );
-    })
-    .forEach(file => {
+    })) {
         try{
-            const model = require(`@models/${file}`)(sequelize, Sequelize.DataTypes);
+            const model = (await import(`#models/${file1}`)).default(sequelize, Sequelize.DataTypes);
             db[model.name] = model;
-            table.addRow(file, "✅", "");
+            table.addRow(file1, "✅", "");
         }catch (e){
-            table.addRow(file, "❌", e);
+            table.addRow(file1, "❌", e);
         }
-    });
+    }
 console.log(table.toString());
 
 table = createTable("Associations", ["Association", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
@@ -53,4 +52,4 @@ console.log(table.toString());
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;

@@ -1,10 +1,10 @@
-const {getUser, createUser, getUsers, removeUser} = require("@controllers/user.controller");
-const userValidation = require("@validations/user.validation");
-const jwtAuth = require("@middlewares/jwt.middleware");
-const {StatusCodes} = require("http-status-codes");
-const {validate} = require("express-validation");
+import {getUser, createUser, getUsers, removeUser} from "#controllers/user.controller";
+import userValidation from "#validations/user.validation";
+import jwtAuth from "#middlewares/jwt.middleware";
+import {StatusCodes} from "http-status-codes";
+import {validate} from "express-validation";
 
-module.exports = (router) => {
+export default (router) => {
     router.get("/users",
         jwtAuth,
         async(req, res) => {

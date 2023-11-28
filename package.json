@@ -2,7 +2,12 @@
     "name": "js-express-api-template",
     "version": "1.0.0",
     "description": "This is a basic template for building a RESTful API using Node.js and Express.js. It provides a structured starting point for your API development, with essential components and best practices.",
-    "main": "src/app.js",
+    "type": "module",
+    "engines": {
+        "node": ">=16"
+    },
+    "main": "./src/app.js",
+    "exports": "./src/app.js",
     "scripts": {
         "dev": "nodemon .",
         "start": "node .",
@@ -55,24 +60,24 @@
         "nodemon": "^3.0.1",
         "nyc": "^15.1.0"
     },
-    "_moduleAliases": {
-        "@": "./",
-        "@src": "./src",
-        "@api": "./src/api",
-        "@controllers": "./src/api/controllers",
-        "@middlewares": "./src/api/middlewares",
-        "@routes": "./src/api/routes",
-        "@services": "./src/api/services",
-        "@tasks": "./src/api/tasks",
-        "@validations": "./src/api/validations",
-        "@database": "./src/database",
-        "@config": "./src/database/config",
-        "@migrations": "./src/database/migrations",
-        "@models": "./src/database/models",
-        "@seeders": "./src/database/seeders",
-        "@utils:db": "./src/database/utils",
-        "@utils": "./src/lib/utils",
-        "@tests": "./src/tests",
-        "@handlers": "./src/lib/handlers"
+    "imports": {
+        "#/*": "./*.js",
+        "#src/*": "./src/*.js",
+        "#api/*": "./src/api/*.js",
+        "#controllers/*": "./src/api/controllers/*.js",
+        "#middlewares/*": "./src/api/middlewares/*.js",
+        "#routes/*": "./src/api/routes/*",
+        "#services/*": "./src/api/services/*.js",
+        "#tasks/*": "./src/api/tasks/*",
+        "#validations/*": "./src/api/validations/*.js",
+        "#database/*": "./src/database/*.js",
+        "#config/*": "./src/database/config/*",
+        "#migrations/*": "./src/database/migrations/*",
+        "#models/*": "./src/database/models/*",
+        "#seeders/*": "./src/database/seeders/*",
+        "#utils:db/*": "./src/database/utils/*.js",
+        "#utils/*": "./src/lib/utils/*.js",
+        "#tests/*": "./src/tests/*.js",
+        "#handlers/*": "./src/lib/handlers/*.js"
     }
 }

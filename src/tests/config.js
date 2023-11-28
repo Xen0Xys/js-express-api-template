@@ -1,5 +1,9 @@
-require("module-alias/register");
-const fs = require("fs");
+import fs from 'fs';
+import db from '#database/index';
+import app from '#api/api';
+import { migrate, seed } from '#utils:db/db.utils';
+import chaiHttp from 'chai-http';
+import chai from 'chai';
 if (!fs.existsSync(".env")){
     try {
         const envExampleContent = fs.readFileSync(".env.example", "utf8");
@@ -9,13 +13,8 @@ if (!fs.existsSync(".env")){
         console.error("An error occurred :", err);
     }
 }
-
-require("dotenv").config();
-const {migrate, seed} = require("@utils:db/db.utils");
-const chaiHttp = require("chai-http");
-const db = require("@database/index");
-const app = require("@api/api");
-const chai = require("chai");
+const dotenv = await import("dotenv");
+dotenv.config();
 
 before(async function(){
     await migrate();
@@ -23,7 +22,7 @@ before(async function(){
     chai.use(chaiHttp);
 });
 
-module.exports = {
+export default {
     app,
     db,
     expect: chai.expect,

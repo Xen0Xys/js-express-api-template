@@ -1,16 +1,17 @@
-const loadFiles = require("./file.handler");
-const {AlignmentEnum} = require("ascii-table3");
+import loadFiles from "#handlers/file.handler";
+import {AlignmentEnum} from "ascii-table3";
+import createTable from "#utils/table";
 
-module.exports = () => {
-    const table = require("@utils/table")("Tasks", ["Task", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
+export default async() => {
+    const table = createTable("Tasks", ["Task", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
     const files = loadFiles("./src/api/tasks", true);
-    files.forEach(file => {
+    for(const file of files){
         try{
-            require(`@tasks/${file}`);
+            await import(`#tasks/${file}`)
             table.addRow(file, "✅", "");
         } catch (e){
             table.addRow(file, "❌", e);
         }
-    });
+    }
     console.log(table.toString());
 };

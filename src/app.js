@@ -1,10 +1,7 @@
-require("module-alias/register");
-require("dotenv").config();
+const dotenv = await import("dotenv");
+dotenv.config();
 
-const database = require("@database/index");
-const app = require("@api/api");
+const database = await import("#database/index");
+const app = await import("#api/api");
 
-module.exports = {
-    database,
-    app
-};
+export { database, app };

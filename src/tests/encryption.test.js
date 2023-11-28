@@ -1,7 +1,7 @@
-const testConfig = require("./config");
-const {getSum, hashPassword, comparePassword, encryptSymmetric, decryptSymmetric, generateKeyPair, encryptAsymmetric,
+import testConfig from "./config.js";
+import {getSum, hashPassword, comparePassword, encryptSymmetric, decryptSymmetric, generateKeyPair, encryptAsymmetric,
     decryptAsymmetric
-} = require("../lib/utils/encryption");
+} from "#utils/encryption";
 const {expect} = testConfig;
 
 const content = "test";

@@ -1,18 +1,18 @@
-const {StatusCodes, ReasonPhrases} = require("http-status-codes");
-const {ValidationError} = require("express-validation");
-const express = require("express");
-const https = require("https");
-const http = require("http");
-const fs = require("fs");
+import {StatusCodes, ReasonPhrases} from "http-status-codes";
+import {ValidationError} from "express-validation";
+import express from "express";
+import https from "https";
+import http from "http";
+import fs from "fs";
 const app = express();
 
-function initMiddlewares(app){
-    const cors = require("cors");
-    const helmet = require("helmet");
-    const rateLimit = require("express-rate-limit");
-    const compression = require("compression");
-    const logger = require("@middlewares/logger.middleware");
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import compression from "compression";
+import logger from "#middlewares/logger.middleware"
 
+function initMiddlewares(app){
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
     app.use(cors());
@@ -29,9 +29,9 @@ function initMiddlewares(app){
 }
 
 /* eslint-disable no-unused-vars */
-function loadRoutes(app, prefix){
+async function loadRoutes(app, prefix){
     const router = express.Router();
-    require("@handlers/route.handler")(router);
+    await (await import("#handlers/route.handler")).default(router);
     app.use(prefix, router);
     app.use(function(err, req, res, _){
         if (err instanceof ValidationError)
@@ -41,8 +41,8 @@ function loadRoutes(app, prefix){
     app.use(({res}) => res.status(StatusCodes.NOT_FOUND).json({message: ReasonPhrases.NOT_FOUND}));
 }
 
-function loadTasks(){
-    require("@handlers/task.handler")();
+async function loadTasks(){
+    await (await import("#handlers/task.handler")).default();
 }
 
 function loadHttpServer(app, bindAddress, port){
@@ -81,13 +81,13 @@ function startServer(app){
     }
 }
 
-function initApi(){
+async function initApi(){
     initMiddlewares(app);
-    loadRoutes(app, process.env.PREFIX);
-    loadTasks();
+    await loadRoutes(app, process.env.PREFIX);
+    await loadTasks();
     startServer(app);
 }
 
-initApi();
+await initApi();
 
-module.exports = app;
+export default app;

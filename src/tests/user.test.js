@@ -1,6 +1,6 @@
-const {StatusCodes} = require("http-status-codes");
-const testConfig = require("./config");
-const {Joi} = require("express-validation");
+import {StatusCodes} from "http-status-codes";
+import testConfig from "./config.js";
+import {Joi} from "express-validation";
 const {app, expect, chai} = testConfig;
 
 const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEifQ.9n1ShpDxEYGwgbmikckZiD45BqRD2UkoN_tYip-pLy0";

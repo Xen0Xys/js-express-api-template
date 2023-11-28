@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
-const {StatusCodes} = require("http-status-codes");
-const {User} = require("@database/index");
-const jwt = require("jsonwebtoken");
+import {StatusCodes} from "http-status-codes";
+import db from "#database/index";
+import jwt from "jsonwebtoken";
+const User = db.User;
 
-module.exports = async(req, res, next) => {
+export default async(req, res, next) => {
     const authHeader = req.headers.authorization;
     if(!authHeader)
         return res.status(StatusCodes.UNAUTHORIZED).json({message: "No token provided"});
