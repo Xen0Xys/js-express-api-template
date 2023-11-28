@@ -11,9 +11,9 @@ if (!fs.existsSync(".env")){
 const app = await import("#src/app");
 const database = app.database;
 const api = app.api;
-import {migrate, seed} from "#utils:db/db.utils";
-import chaiHttp from "chai-http";
+import { migrate, seed } from "#utils:db/db.utils";
 import chai from "chai";
+import chaiHttp from "chai-http";
 
 before(async function(){
     await migrate();
@@ -21,4 +21,9 @@ before(async function(){
     chai.use(chaiHttp);
 });
 
-export { api, database, chai, chai as expect };
+export default {
+    api,
+    database,
+    chai,
+    expect: chai.expect
+};

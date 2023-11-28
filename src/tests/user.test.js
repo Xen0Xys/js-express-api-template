@@ -1,6 +1,7 @@
 import {StatusCodes} from "http-status-codes";
-import {api, expect, chai} from "./config.js";
 import {Joi} from "express-validation";
+import testConfig from "./config.js";
+const {api, expect, chai} = testConfig;
 
 const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEifQ.9n1ShpDxEYGwgbmikckZiD45BqRD2UkoN_tYip-pLy0";
 const testUser = {
