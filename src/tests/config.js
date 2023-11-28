@@ -1,9 +1,4 @@
 import fs from "fs";
-import db from "#database/index";
-import app from "#api/api";
-import {migrate, seed} from "#utils:db/db.utils";
-import chaiHttp from "chai-http";
-import chai from "chai";
 if (!fs.existsSync(".env")){
     try {
         const envExampleContent = fs.readFileSync(".env.example", "utf8");
@@ -13,8 +8,12 @@ if (!fs.existsSync(".env")){
         console.error("An error occurred :", err);
     }
 }
-const dotenv = await import("dotenv");
-dotenv.config();
+const app = await import("#src/app");
+const database = app.database;
+const api = app.api;
+import {migrate, seed} from "#utils:db/db.utils";
+import chaiHttp from "chai-http";
+import chai from "chai";
 
 before(async function(){
     await migrate();
@@ -22,9 +21,4 @@ before(async function(){
     chai.use(chaiHttp);
 });
 
-export default {
-    app,
-    db,
-    expect: chai.expect,
-    chai
-};
+export { api, database, chai, chai as expect };

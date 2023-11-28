@@ -4,13 +4,14 @@ import express from "express";
 import https from "https";
 import http from "http";
 import fs from "fs";
-const app = express();
 
-import cors from "cors";
-import helmet from "helmet";
+import logger from "#middlewares/logger.middleware";
 import rateLimit from "express-rate-limit";
 import compression from "compression";
-import logger from "#middlewares/logger.middleware";
+import helmet from "helmet";
+import cors from "cors";
+
+const api = express();
 
 function initMiddlewares(app){
     app.use(express.json());
@@ -82,12 +83,12 @@ function startServer(app){
 }
 
 async function initApi(){
-    initMiddlewares(app);
-    await loadRoutes(app, process.env.PREFIX);
+    initMiddlewares(api);
+    await loadRoutes(api, process.env.PREFIX);
     await loadTasks();
-    startServer(app);
+    startServer(api);
 }
 
 await initApi();
 
-export default app;
+export default api;
