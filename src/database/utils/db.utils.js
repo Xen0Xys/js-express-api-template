@@ -13,7 +13,7 @@ async function migrate(){
         await db.sequelize.query("CREATE TABLE `SequelizeMeta` (`name` VARCHAR(255) NOT NULL, PRIMARY KEY (`name`))");
         doneMigrations = [];
     }
-    const files = loadFiles("./src/database/migrations", true);
+    const files = loadFiles(`${__dirname}/../migrations`, true);
     for(const file of files){
         if(doneMigrations.find(migration => migration.name === file))
             continue;
@@ -36,7 +36,7 @@ async function migrate(){
 
 async function seed(){
     const table = require("@utils/table")("Seeds", ["Seed", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
-    const files = loadFiles("./src/database/seeders", true);
+    const files = loadFiles(`${__dirname}/../seeders`, true);
     for(const file of files){
         const seeder = require(`@seeders/${file}`);
         try{
