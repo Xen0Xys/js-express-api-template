@@ -17,38 +17,10 @@ const {sequelizeJoi} = require("sequelize-joi");
 const {AlignmentEnum} = require("ascii-table3");
 sequelizeJoi(sequelize);
 
-const createTable = require("@utils/table");
-let table = createTable("Models", ["Model", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
-fs.readdirSync(__dirname + "/models")
-    .filter(file => {
-        return (
-            file.indexOf(".") !== 0 &&
-            file.slice(-3) === ".js" &&
-            file.indexOf(".test.js") === -1
-        );
-    })
-    .forEach(file => {
-        try{
-            const model = require(`@models/${file}`)(sequelize, Sequelize.DataTypes);
-            db[model.name] = model;
-            table.addRow(file, "✅", "");
-        }catch (e){
-            table.addRow(file, "❌", e);
-        }
-    });
-console.log(table.toString());
-
-table = createTable("Associations", ["Association", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
-Object.keys(db).forEach(modelName => {
-    try{
-        if(db[modelName].associate)
-            db[modelName].associate(db);
-        table.addRow(modelName, "✅", "");
-    }catch (e){
-        table.addRow(modelName, "❌", e);
-    }
-});
-console.log(table.toString());
+// Load models
+require("@handlers/model.handler")(db, sequelize);
+// Load associations
+require("@handlers/association.handler")(db);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
