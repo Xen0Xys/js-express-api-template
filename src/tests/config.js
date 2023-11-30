@@ -6,7 +6,7 @@ require("dotenv-safe").config({
 });
 const chaiHttp = require("chai-http");
 const db = require("@database/index");
-const app = require("@api/api");
+const api = require("@api/api");
 const chai = require("chai");
 
 before(async function(){
@@ -16,7 +16,7 @@ before(async function(){
 });
 
 module.exports = {
-    app,
+    api,
     db,
     expect: chai.expect,
     chai

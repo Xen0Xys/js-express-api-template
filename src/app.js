@@ -5,9 +5,9 @@ require("dotenv-safe").config({
 });
 
 const database = require("@database/index");
-const app = require("@api/api");
+const api = require("@api/api");
 
 module.exports = {
     database,
-    app
+    api
 };
