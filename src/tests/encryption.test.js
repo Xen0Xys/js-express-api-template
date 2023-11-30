@@ -1,12 +1,14 @@
 const testConfig = require("./config");
-const {getSum, hashPassword, comparePassword, encryptSymmetric, decryptSymmetric, generateKeyPair, encryptAsymmetric,
-    decryptAsymmetric
+const {getSum, generateJWT, hashPassword, comparePassword, encryptSymmetric, decryptSymmetric, generateKeyPair, encryptAsymmetric,
+    decryptAsymmetric,
+    verifyJWT
 } = require("../lib/utils/encryption");
 const {expect} = testConfig;
 
 const content = "test";
 const hashCost = 2;
 const encryptCost = 10000;
+let keyPair;
 
 describe("SHA-256 tests", async() => {
     it("Get SHA-256 sum", async() => {
@@ -32,6 +34,24 @@ describe("SHA-256 tests", async() => {
     it("Get SHA-256 sum with number content", async() => {
         const sum = getSum(123);
         expect(sum).to.equal("a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3");
+    });
+});
+
+describe("JWT tests", async() => {
+    it("Symmetric JWT", async() => {
+        const token = generateJWT({content});
+        expect(token).to.be.a("string");
+        const decoded = await verifyJWT(token);
+        expect(decoded).to.be.an("object");
+        expect(decoded).to.have.property("content");
+    });
+    it("Asymmetric JWT", async() => {
+        const keyPair = generateKeyPair(2048);
+        const token = generateJWT({content}, false, keyPair.privateKey);
+        expect(token).to.be.a("string");
+        const decoded = await verifyJWT(token, false, keyPair.publicKey);
+        expect(decoded).to.be.an("object");
+        expect(decoded).to.have.property("content");
     });
 });
 
@@ -115,8 +135,6 @@ describe("Symmetric encryption tests", async() => {
     });
 });
 
-let keyPair;
-
 describe("Asymmetric encryption tests", async() => {
     it("Key generation", async() => {
         keyPair = generateKeyPair(1024);
@@ -125,6 +143,22 @@ describe("Asymmetric encryption tests", async() => {
         expect(keyPair).to.have.property("privateKey");
         expect(keyPair.publicKey).to.be.a("string");
         expect(keyPair.privateKey).to.be.a("string");
+    });
+    it("Key generation with undefined private encryption key", async() => {
+        const localKeyPair = generateKeyPair(1024, undefined);
+        expect(localKeyPair).to.be.an("object");
+        expect(localKeyPair).to.have.property("publicKey");
+        expect(localKeyPair).to.have.property("privateKey");
+        expect(localKeyPair.publicKey).to.be.a("string");
+        expect(localKeyPair.privateKey).to.be.a("string");
+    });
+    it("Key generation with null private encryption key", async() => {
+        const localKeyPair = generateKeyPair(1024, null);
+        expect(localKeyPair).to.be.an("object");
+        expect(localKeyPair).to.have.property("publicKey");
+        expect(localKeyPair).to.have.property("privateKey");
+        expect(localKeyPair.publicKey).to.be.a("string");
+        expect(localKeyPair.privateKey).to.be.a("string");
     });
     it("Encrypt content", async() => {
         const encrypted = encryptAsymmetric(content, keyPair.publicKey);
