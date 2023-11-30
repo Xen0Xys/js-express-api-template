@@ -1,7 +1,6 @@
 const env = process.env.NODE_ENV || "development";
 const config = require("@config/config.json")[env];
 const Sequelize = require("sequelize");
-const fs = require("fs");
 const db = {};
 
 let sequelize;
@@ -14,7 +13,6 @@ else {
 }
 
 const {sequelizeJoi} = require("sequelize-joi");
-const {AlignmentEnum} = require("ascii-table3");
 sequelizeJoi(sequelize);
 
 // Load models
