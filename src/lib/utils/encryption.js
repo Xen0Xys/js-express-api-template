@@ -93,12 +93,13 @@ async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SY
 
 /**
  * Generates a key pair
+ * @param modulusLength The modulus length
  * @param privateEncryptionKey The private encryption key
  * @returns {KeyPairSyncResult<string, string>} The key pair
  */
-function generateKeyPair(privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+function generateKeyPair(modulusLength = 4096, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
     return crypto.generateKeyPairSync("rsa", {
-        modulusLength: 4096,
+        modulusLength: modulusLength,
         publicKeyEncoding: {
             type: "spki",
             format: "pem"

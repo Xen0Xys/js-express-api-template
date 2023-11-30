@@ -138,15 +138,15 @@ let keyPair;
 
 describe("Asymmetric encryption tests", async() => {
     it("Key generation", async() => {
-        keyPair = generateKeyPair();
+        keyPair = generateKeyPair(2048);
         expect(keyPair).to.be.an("object");
         expect(keyPair).to.have.property("publicKey");
         expect(keyPair).to.have.property("privateKey");
         expect(keyPair.publicKey).to.be.a("string");
         expect(keyPair.privateKey).to.be.a("string");
-        expect(keyPair.publicKey).to.have.lengthOf(800);
-        expect(keyPair.privateKey).to.have.lengthOf(3434);
-    }).timeout(3000);
+        expect(keyPair.publicKey).to.have.lengthOf(451);
+        expect(keyPair.privateKey).to.have.lengthOf(1874);
+    });
     it("Encrypt content", async() => {
         const encrypted = encryptAsymmetric(content, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
@@ -158,7 +158,7 @@ describe("Asymmetric encryption tests", async() => {
     it("Encrypt content with empty content", async() => {
         const encrypted = encryptAsymmetric("", keyPair.publicKey);
         expect(encrypted).to.be.a("string");
-        expect(encrypted).to.have.lengthOf(684);
+        expect(encrypted).to.have.lengthOf(344);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(0);
@@ -167,7 +167,7 @@ describe("Asymmetric encryption tests", async() => {
     it("Encrypt content with null content", async() => {
         const encrypted = encryptAsymmetric(null, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
-        expect(encrypted).to.have.lengthOf(684);
+        expect(encrypted).to.have.lengthOf(344);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(0);
@@ -176,7 +176,7 @@ describe("Asymmetric encryption tests", async() => {
     it("Encrypt content with undefined content", async() => {
         const encrypted = encryptAsymmetric(undefined, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
-        expect(encrypted).to.have.lengthOf(684);
+        expect(encrypted).to.have.lengthOf(344);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(0);
@@ -185,7 +185,7 @@ describe("Asymmetric encryption tests", async() => {
     it("Encrypt content with no content", async() => {
         const encrypted = encryptAsymmetric(undefined, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
-        expect(encrypted).to.have.lengthOf(684);
+        expect(encrypted).to.have.lengthOf(344);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(0);
@@ -194,7 +194,7 @@ describe("Asymmetric encryption tests", async() => {
     it("Encrypt content with number content", async() => {
         const encrypted = encryptAsymmetric(123, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
-        expect(encrypted).to.have.lengthOf(684);
+        expect(encrypted).to.have.lengthOf(344);
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(3);
