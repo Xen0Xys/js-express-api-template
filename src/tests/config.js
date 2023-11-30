@@ -5,7 +5,7 @@ require("dotenv-safe").config({
     example: ".env.example"
 });
 const chaiHttp = require("chai-http");
-const db = require("@database/index");
+const db = require("@database/database");
 const api = require("@api/api");
 const chai = require("chai");
 

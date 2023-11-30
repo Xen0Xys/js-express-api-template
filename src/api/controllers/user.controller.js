@@ -1,5 +1,5 @@
 const {StatusCodes, ReasonPhrases} = require("http-status-codes");
-const {User} = require("@database/index");
+const {User} = require("@database/database");
 const {getFlag} = require("@services/user.service");
 const {hashPassword} = require("../../lib/utils/encryption");
 

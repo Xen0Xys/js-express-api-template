@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const {StatusCodes} = require("http-status-codes");
-const {User} = require("@database/index");
+const {User} = require("@database/database");
 const jwt = require("jsonwebtoken");
 
 module.exports = async(req, res, next) => {
