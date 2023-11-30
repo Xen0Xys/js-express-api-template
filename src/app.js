@@ -1,5 +1,8 @@
 require("module-alias/register");
-require("dotenv").config();
+require("dotenv-safe").config({
+    allowEmptyValues: false,
+    example: ".env.example"
+});
 
 const database = require("@database/index");
 const app = require("@api/api");

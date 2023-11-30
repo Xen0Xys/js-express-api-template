@@ -1,16 +1,9 @@
 require("module-alias/register");
-const fs = require("fs");
-if (!fs.existsSync(".env")){
-    try {
-        const envExampleContent = fs.readFileSync(".env.example", "utf8");
-        fs.writeFileSync(".env", envExampleContent, "utf8");
-        console.log(".env created from .env.example!");
-    } catch (err){
-        console.error("An error occurred :", err);
-    }
-}
-
-require("dotenv").config();
+require("dotenv-safe").config({
+    path: ".env.ci",
+    allowEmptyValues: true,
+    example: ".env.example"
+});
 const {migrate, seed} = require("@utils:db/db.utils");
 const chaiHttp = require("chai-http");
 const db = require("@database/index");
