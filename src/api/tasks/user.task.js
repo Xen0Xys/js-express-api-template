@@ -1,4 +1,4 @@
-const {User} = require("@database/index");
+const {User} = require("@database/database");
 const {Op} = require("sequelize");
 const cron = require("node-cron");
 

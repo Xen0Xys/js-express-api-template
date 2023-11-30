@@ -1,10 +1,9 @@
 // noinspection SqlNoDataSourceInspection
 
-const db = require("@database/index");
-const loadFiles = require("@handlers/file.handler");
+const loadFiles = require("./file.handler");
 const {AlignmentEnum} = require("ascii-table3");
 
-async function migrate(){
+module.exports = async(db) => {
     const table = require("@utils/table")("Migrations", ["Migration", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
     let doneMigrations;
     try{
@@ -13,7 +12,7 @@ async function migrate(){
         await db.sequelize.query("CREATE TABLE `SequelizeMeta` (`name` VARCHAR(255) NOT NULL, PRIMARY KEY (`name`))");
         doneMigrations = [];
     }
-    const files = loadFiles(`${__dirname}/../migrations`, true);
+    const files = loadFiles("./src/database/migrations", true);
     for(const file of files){
         if(doneMigrations.find(migration => migration.name === file))
             continue;
@@ -31,30 +30,5 @@ async function migrate(){
             }
         }
     }
-    console.log(table.toString().slice(0, -1));
-}
-
-async function seed(){
-    const table = require("@utils/table")("Seeds", ["Seed", "Status", "Error"], [AlignmentEnum.LEFT, AlignmentEnum.CENTER, AlignmentEnum.LEFT]);
-    const files = loadFiles(`${__dirname}/../seeders`, true);
-    for(const file of files){
-        const seeder = require(`@seeders/${file}`);
-        try{
-            await seeder.up(db.sequelize.getQueryInterface(), db.Sequelize);
-            table.addRow(file, "✅", "");
-        }catch (e){
-            try{
-                table.addRow(file, "❌", e);
-                await seeder.down(db.sequelize.getQueryInterface(), db.Sequelize);
-            }catch (e){
-                table.addRow(file, "❌", e);
-            }
-        }
-    }
-    console.log(table.toString().slice(0, -1));
-}
-
-module.exports = {
-    migrate,
-    seed
+    console.log(table.toString());
 };

@@ -4,7 +4,7 @@ const express = require("express");
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
-const app = express();
+const api = express();
 
 function initMiddlewares(app){
     const cors = require("cors");
@@ -82,12 +82,12 @@ function startServer(app){
 }
 
 function initApi(){
-    initMiddlewares(app);
-    loadRoutes(app, process.env.PREFIX);
+    initMiddlewares(api);
+    loadRoutes(api, process.env.PREFIX);
     loadTasks();
-    startServer(app);
+    startServer(api);
 }
 
 initApi();
 
-module.exports = app;
+module.exports = api;

@@ -1,7 +1,6 @@
-/* eslint-disable no-undef */
 const {StatusCodes} = require("http-status-codes");
-const {User} = require("@database/index");
-const jwt = require("jsonwebtoken");
+const {User} = require("@database/database");
+const {verifyJWT} = require("../../lib/utils/encryption");
 
 module.exports = async(req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -11,7 +10,7 @@ module.exports = async(req, res, next) => {
     if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({message: "No token provided"});
     let decodedToken;
     try{
-        decodedToken = await jwt.verify(token, process.env.JWT_KEY);
+        decodedToken = verifyJWT(token);
     }catch(e){
         return res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid token", error: e});
     }

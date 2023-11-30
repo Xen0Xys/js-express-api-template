@@ -1,23 +1,16 @@
 require("module-alias/register");
-require("dotenv-safe").config({
-    path: ".env.ci",
-    allowEmptyValues: true,
-    example: ".env.example"
-});
-const {migrate, seed} = require("@utils:db/db.utils");
 const chaiHttp = require("chai-http");
-const db = require("@database/index");
-const app = require("@api/api");
+const {database: db, api} = require("@src/app");
 const chai = require("chai");
 
 before(async function(){
-    await migrate();
-    await seed();
+    await require("@handlers/migration.handler")(db);
+    await require("@handlers/seeder.handler")(db);
     chai.use(chaiHttp);
 });
 
 module.exports = {
-    app,
+    api,
     db,
     expect: chai.expect,
     chai

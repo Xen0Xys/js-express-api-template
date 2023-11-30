@@ -1,5 +1,6 @@
 const argon2 = require("argon2");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 /**
  * Converts a content to a string
@@ -20,6 +21,36 @@ function stringify(content){
 function getSum(content){
     content = stringify(content);
     return crypto.createHash("sha256").update(content).digest("hex");
+}
+
+/**
+ * Generates a JWT token
+ * @param content The content to sign
+ * @param symmetric True if the token encryption should be symmetric, false otherwise
+ * @param jwtKey The private key
+ * @param expiresIn The expiration time
+ * @returns {*} The JWT token
+ */
+function generateJWT(content, symmetric = true, jwtKey = process.env.JWT_KEY, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY, expiresIn = process.env.TOKEN_DURATION){
+    const algorithm = symmetric ? "HS512" : "RS512";
+    console.log(jwtKey);
+    console.log(privateEncryptionKey);
+    if(symmetric)
+        return jwt.sign(content, jwtKey, {expiresIn, algorithm});
+    else
+        return jwt.sign(content, {key: jwtKey, passphrase: privateEncryptionKey}, {expiresIn, algorithm});
+}
+
+/**
+ * Verifies a JWT token
+ * @param token The token to verify
+ * @param symmetric True if the token encryption should be symmetric, false otherwise
+ * @param jwtKey The private key
+ * @returns {*} The decoded token
+ */
+function verifyJWT(token, symmetric = true, jwtKey = process.env.JWT_KEY){
+    const algorithm = symmetric ? "HS512" : "RS512";
+    return jwt.verify(token, jwtKey, {algorithms: algorithm});
 }
 
 /**
@@ -98,18 +129,22 @@ async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SY
  * @returns {KeyPairSyncResult<string, string>} The key pair
  */
 function generateKeyPair(modulusLength = 4096, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+    console.log("Keygen : " + privateEncryptionKey);
+    let privateKeyEncodingOptions = {
+        type: "pkcs8",
+        format: "pem"
+    };
+    if(privateEncryptionKey){
+        privateKeyEncodingOptions.cipher = "aes-256-cbc";
+        privateKeyEncodingOptions.passphrase = privateEncryptionKey;
+    }
     return crypto.generateKeyPairSync("rsa", {
         modulusLength: modulusLength,
         publicKeyEncoding: {
             type: "spki",
             format: "pem"
         },
-        privateKeyEncoding: {
-            type: "pkcs8",
-            format: "pem",
-            cipher: "aes-256-cbc",
-            passphrase: privateEncryptionKey
-        }
+        privateKeyEncoding: privateKeyEncodingOptions
     });
 }
 
@@ -147,6 +182,8 @@ function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = 
 
 module.exports = {
     getSum,
+    generateJWT,
+    verifyJWT,
     hashPassword,
     comparePassword,
     encryptSymmetric,
