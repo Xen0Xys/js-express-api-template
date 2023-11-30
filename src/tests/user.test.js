@@ -4,7 +4,7 @@ const {Joi} = require("express-validation");
 const {generateJWT} = require("../lib/utils/encryption");
 const {api, expect, chai} = testConfig;
 
-const testToken = generateJWT({id: 1})
+const testToken = generateJWT({id: 1});
 const testUser = {
     firstName: "Test",
     lastName: "User",
