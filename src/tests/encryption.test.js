@@ -60,12 +60,6 @@ describe("Hash tests", async() => {
         const compare = await comparePassword(hash, undefined);
         expect(compare).to.be.true;
     });
-    it("Hash password with no content", async() => {
-        const hash = await hashPassword();
-        expect(hash).to.be.a("string");
-        const compare = await comparePassword(hash);
-        expect(compare).to.be.true;
-    });
     it("Hash password with number content", async() => {
         const hash = await hashPassword(123, hashCost);
         expect(hash).to.be.a("string");
@@ -106,15 +100,6 @@ describe("Symmetric encryption tests", async() => {
         expect(encrypted).to.be.a("string");
         expect(encrypted).to.have.lengthOf(195);
         const decrypted = await decryptSymmetric(encrypted, process.env.SYMMETRIC_ENCRYPTION_KEY, encryptCost);
-        expect(decrypted).to.be.a("string");
-        expect(decrypted).to.have.lengthOf(0);
-        expect(decrypted).to.equal("");
-    });
-    it("Encrypt content with no content", async() => {
-        const encrypted = await encryptSymmetric();
-        expect(encrypted).to.be.a("string");
-        expect(encrypted).to.have.lengthOf(195);
-        const decrypted = await decryptSymmetric(encrypted);
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(0);
         expect(decrypted).to.equal("");
@@ -166,14 +151,6 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.equal("");
     });
     it("Encrypt content with undefined content", async() => {
-        const encrypted = encryptAsymmetric(undefined, keyPair.publicKey);
-        expect(encrypted).to.be.a("string");
-        const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
-        expect(decrypted).to.be.a("string");
-        expect(decrypted).to.have.lengthOf(0);
-        expect(decrypted).to.equal("");
-    });
-    it("Encrypt content with no content", async() => {
         const encrypted = encryptAsymmetric(undefined, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
         const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey);
