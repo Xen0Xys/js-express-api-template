@@ -1,12 +1,6 @@
 require("module-alias/register");
-require("dotenv-safe").config({
-    path: ".env.ci",
-    allowEmptyValues: true,
-    example: ".env.example"
-});
 const chaiHttp = require("chai-http");
-const db = require("@database/database");
-const api = require("@api/api");
+const {database: db, api} = require("@src/app");
 const chai = require("chai");
 
 before(async function(){
