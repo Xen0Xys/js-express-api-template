@@ -1,19 +1,18 @@
 require("module-alias/register");
-if(process.env.NODE_ENV === "test"){
-    require("dotenv-safe").config({
-        path: ".env.ci",
-        allowEmptyValues: true,
-        example: ".env.example"
-    });
-}else{
-    require("dotenv-safe").config({
-        allowEmptyValues: false,
-        example: ".env.example"
-    });
-}
+if(process.env.NODE_ENV === "test")
+    require("dotenv").config({path: ".env.ci"});
+else
+    require("dotenv").config();
 
 const database = require("@database/database");
-const api = require("@api/api");
+let api;
+if(process.env.NODE_ENV !== "test")
+    require("@handlers/migration.handler")(database).then(() => {
+        api = require("@api/api");
+    });
+else
+    api = require("@api/api");
+
 
 module.exports = {
     database,
