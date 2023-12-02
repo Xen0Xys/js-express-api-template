@@ -1,9 +1,6 @@
 name: Node.js CI
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -11,15 +8,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [21]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - name: Use Node.js 21
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 21
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
@@ -28,7 +28,6 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && ${{ false }} # Change to true to enable deployment
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
