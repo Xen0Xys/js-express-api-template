@@ -29,11 +29,11 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: |
-      secrets.DOCKER_PASSWORD &&
-      secrets.SERVER_ADDRESS &&
-      secrets.SERVER_USERNAME &&
-      secrets.SERVER_PASSWORD &&
-      secrets.DOTENV_KEY
+      ${{ secrets.DOCKER_PASSWORD }} &&
+      ${{ secrets.SERVER_ADDRESS }} &&
+      ${{ secrets.SERVER_USERNAME }} &&
+      ${{ secrets.SERVER_PASSWORD }} &&
+      ${{ secrets.DOTENV_KEY }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
