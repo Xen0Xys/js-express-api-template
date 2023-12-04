@@ -29,15 +29,28 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - name: Secret check
+        env:
+          DEFINE_CHECK: ${{ secrets.SERVER_ADDRESS }}
+        run: |
+          if [ -z "$DEFINE_CHECK" ]; then
+            echo "The secret is not defined. Skipping remaining deployment steps"
+            echo "SECRET_NOT_DEFINED=true" >> "$GITHUB_ENV"
+          else
+            echo "The secret is defined. Continuing."
+          fi
       - name: Checkout Repository
+        if: env.SECRET_NOT_DEFINED != 'true'
         uses: actions/checkout@v4
       - name: Build and Push Docker Image
+        if: env.SECRET_NOT_DEFINED != 'true'
         run: |
           docker build -t my-api .
           docker login -u xen0xys -p ${{ secrets.DOCKER_PASSWORD }}
           docker tag my-api:latest xen0xys/my-api:latest
           docker push xen0xys/my-api:latest
       - name: SSH into Server and Deploy
+        if: env.SECRET_NOT_DEFINED != 'true'
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_ADDRESS }}
