@@ -5,6 +5,8 @@ WORKDIR /home
 
 COPY . .
 
+RUN mkdir -p /home/keys
+
 RUN npm install -g pnpm
 RUN pnpm install
 
