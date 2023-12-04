@@ -10,7 +10,7 @@ module.exports = async(req, res, next) => {
     if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({message: "No token provided"});
     let decodedToken;
     try{
-        decodedToken = verifyJWT(token);
+        decodedToken = verifyJWT(token, process.env.JWT_KEY);
     }catch(e){
         return res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid token", error: e});
     }
