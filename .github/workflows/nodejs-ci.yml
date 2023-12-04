@@ -47,4 +47,4 @@ jobs:
             docker pull xen0xys/my-api:latest
             docker stop my-api || true
             docker rm my-api || true
-            docker run -d -p 3000:3000 -e DOTENV_KEY=${{ secrets.DOTENV_KEY }} --name my-api --restart on-failure:2 xen0xys/my-api:latest
+            docker run -d -p 3000:3000 -e DOTENV_KEY=${{ secrets.DOTENV_KEY }} -v /home/${{ secrets.SERVER_USERNAME }}/keys:/home/keys --name my-api --restart on-failure:2 xen0xys/my-api:latest
