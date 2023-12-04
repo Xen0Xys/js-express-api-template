@@ -4,6 +4,7 @@ const {getSum, generateJWT, hashPassword, comparePassword, encryptSymmetric, dec
     verifyJWT
 } = require("../lib/utils/encryption");
 const {expect} = testConfig;
+const {assert} = require("chai");
 
 const content = "test";
 const hashCost = 2;
@@ -39,17 +40,32 @@ describe("SHA-256 tests", async() => {
 
 describe("JWT tests", async() => {
     it("Symmetric JWT", async() => {
-        const token = generateJWT({content});
+        const token = generateJWT({content}, process.env.TOKEN_DURATION, process.env.JWT_KEY);
         expect(token).to.be.a("string");
-        const decoded = await verifyJWT(token);
+        const decoded = await verifyJWT(token, process.env.JWT_KEY);
         expect(decoded).to.be.an("object");
         expect(decoded).to.have.property("content");
     });
+    it("Verify JWT with wrong key", async() => {
+        const token = generateJWT({content}, process.env.TOKEN_DURATION, process.env.JWT_KEY);
+        assert.throws(() => verifyJWT(token, "wrong_key"), Error);
+    });
+    it("Verify no JWT content", async() => {
+        assert.throws(() => verifyJWT("invalid_content", process.env.JWT_KEY), Error);
+    });
     it("Asymmetric JWT", async() => {
-        const keyPair = generateKeyPair(2048);
-        const token = generateJWT({content}, false, keyPair.privateKey);
+        const localKeyPair = generateKeyPair(2048);
+        const token = generateJWT({content}, process.env.TOKEN_DURATION, localKeyPair.privateKey, false);
         expect(token).to.be.a("string");
-        const decoded = await verifyJWT(token, false, keyPair.publicKey);
+        const decoded = await verifyJWT(token, localKeyPair.publicKey);
+        expect(decoded).to.be.an("object");
+        expect(decoded).to.have.property("content");
+    });
+    it("Asymmetric JWT with private encryption key", async() => {
+        const localKeyPair = generateKeyPair(2048, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const token = generateJWT({content}, process.env.TOKEN_DURATION, localKeyPair.privateKey, false, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        expect(token).to.be.a("string");
+        const decoded = await verifyJWT(token, localKeyPair.publicKey, process.env.ASYMMETRIC_ENCRYPTION_KEY);
         expect(decoded).to.be.an("object");
         expect(decoded).to.have.property("content");
     });
@@ -61,6 +77,14 @@ describe("Hash tests", async() => {
         expect(hash).to.be.a("string");
         const compare = await comparePassword(hash, content);
         expect(compare).to.be.true;
+    });
+    it("Compare password with wrong content", async() => {
+        const hash = await hashPassword(content, hashCost);
+        const compare = await comparePassword(hash, "wrong_content");
+        expect(compare).to.be.false;
+    });
+    it("Hash password with negative cost", async() => {
+        await expect(hashPassword(content, -1)).to.be.rejectedWith(Error);
     });
     it("Hash password with empty content", async() => {
         const hash = await hashPassword("", hashCost);
@@ -96,6 +120,17 @@ describe("Symmetric encryption tests", async() => {
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(content.length);
         expect(decrypted).to.equal(content);
+    });
+    it("Decrypt symmetric with wrong key", async() => {
+        const encrypted = await encryptSymmetric(content, process.env.SYMMETRIC_ENCRYPTION_KEY, encryptCost);
+        await expect(decryptSymmetric(encrypted, "wrong_key", encryptCost)).to.be.rejectedWith(Error);
+    });
+    it("Encrypt symmetric with negative time cost", async() => {
+        await expect(encryptSymmetric(content, process.env.SYMMETRIC_ENCRYPTION_KEY, -1)).to.be.rejectedWith(Error);
+    });
+    it("Decrypt symmetric with negative time cost", async() => {
+        const encrypted = await encryptSymmetric(content, process.env.SYMMETRIC_ENCRYPTION_KEY, encryptCost);
+        await expect(decryptSymmetric(encrypted, process.env.SYMMETRIC_ENCRYPTION_KEY, -1)).to.be.rejectedWith(Error);
     });
     it("Encrypt content with empty content", async() => {
         const encrypted = await encryptSymmetric("", process.env.SYMMETRIC_ENCRYPTION_KEY, encryptCost);
@@ -144,6 +179,14 @@ describe("Asymmetric encryption tests", async() => {
         expect(keyPair.publicKey).to.be.a("string");
         expect(keyPair.privateKey).to.be.a("string");
     });
+    it("Key generation with private encryption key", async() => {
+        const localKeyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        expect(keyPair).to.be.an("object");
+        expect(keyPair).to.have.property("publicKey");
+        expect(keyPair).to.have.property("privateKey");
+        expect(keyPair.publicKey).to.be.a("string");
+        expect(keyPair.privateKey).to.be.a("string");
+    });
     it("Key generation with undefined private encryption key", async() => {
         const localKeyPair = generateKeyPair(1024, undefined);
         expect(localKeyPair).to.be.an("object");
@@ -160,6 +203,9 @@ describe("Asymmetric encryption tests", async() => {
         expect(localKeyPair.publicKey).to.be.a("string");
         expect(localKeyPair.privateKey).to.be.a("string");
     });
+    it("Generate key pair with negative modulus length", async() => {
+        assert.throws(() => generateKeyPair(-1, process.env.ASYMMETRIC_ENCRYPTION_KEY), Error);
+    });
     it("Encrypt content", async() => {
         const encrypted = encryptAsymmetric(content, keyPair.publicKey);
         expect(encrypted).to.be.a("string");
@@ -167,6 +213,11 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(content.length);
         expect(decrypted).to.equal(content);
+    });
+
+    it("Decrypt asymmetric with wrong key", async() => {
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        assert.throws(() => decryptAsymmetric(encrypted, "wrong_key"), Error);
     });
     it("Encrypt content with empty content", async() => {
         const encrypted = encryptAsymmetric("", keyPair.publicKey);
@@ -199,5 +250,72 @@ describe("Asymmetric encryption tests", async() => {
         expect(decrypted).to.be.a("string");
         expect(decrypted).to.have.lengthOf(3);
         expect(decrypted).to.equal("123");
+    });
+    it("Encrypt content with private encryption key", async() => {
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        expect(decrypted).to.be.a("string");
+        expect(decrypted).to.have.lengthOf(content.length);
+        expect(decrypted).to.equal(content);
+    });
+    it("Encrypt content with null encryption key", async() => {
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey, null);
+        expect(decrypted).to.be.a("string");
+        expect(decrypted).to.have.lengthOf(content.length);
+        expect(decrypted).to.equal(content);
+    });
+    it("Encrypt content with undefined encryption key", async() => {
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey, undefined);
+        expect(decrypted).to.be.a("string");
+        expect(decrypted).to.have.lengthOf(content.length);
+        expect(decrypted).to.equal(content);
+    });
+    it("Encrypt content with encryption key and encrypted private key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        const decrypted = decryptAsymmetric(encrypted, keyPair.privateKey, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        expect(decrypted).to.be.a("string");
+        expect(decrypted).to.have.lengthOf(content.length);
+        expect(decrypted).to.equal(content);
+    });
+    it("Decrypt asymmetric with wrong encrypted private key and correct private encryption key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        assert.throws(() => decryptAsymmetric(encrypted, "wrong_key", process.env.ASYMMETRIC_ENCRYPTION_KEY), Error);
+    });
+    it("Encrypt content with no private encryption key and encrypted private key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        assert.throws(() => decryptAsymmetric(encrypted, keyPair.privateKey), Error);
+    });
+    it("Encrypt content with null private encryption key and encrypted private key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        assert.throws(() => decryptAsymmetric(encrypted, keyPair.privateKey, null), Error);
+    });
+    it("Encrypt content with undefined private encryption key and encrypted private key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        assert.throws(() => decryptAsymmetric(encrypted, keyPair.privateKey, undefined), Error);
+    });
+    it("Encrypt content with wrong private encryption key and encrypted private key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        expect(encrypted).to.be.a("string");
+        assert.throws(() => decryptAsymmetric(encrypted, keyPair.privateKey, "invalid_key"), Error);
+    });
+    it("Decrypt asymmetric with wrong encrypted private key", async() => {
+        keyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
+        const encrypted = encryptAsymmetric(content, keyPair.publicKey);
+        assert.throws(() => decryptAsymmetric(encrypted, keyPair.privateKey, "wrong_key"), Error);
     });
 });
