@@ -181,11 +181,11 @@ describe("Asymmetric encryption tests", async() => {
     });
     it("Key generation with private encryption key", async() => {
         const localKeyPair = generateKeyPair(1024, process.env.ASYMMETRIC_ENCRYPTION_KEY);
-        expect(keyPair).to.be.an("object");
-        expect(keyPair).to.have.property("publicKey");
-        expect(keyPair).to.have.property("privateKey");
-        expect(keyPair.publicKey).to.be.a("string");
-        expect(keyPair.privateKey).to.be.a("string");
+        expect(localKeyPair).to.be.an("object");
+        expect(localKeyPair).to.have.property("publicKey");
+        expect(localKeyPair).to.have.property("privateKey");
+        expect(localKeyPair.publicKey).to.be.a("string");
+        expect(localKeyPair.privateKey).to.be.a("string");
     });
     it("Key generation with undefined private encryption key", async() => {
         const localKeyPair = generateKeyPair(1024, undefined);

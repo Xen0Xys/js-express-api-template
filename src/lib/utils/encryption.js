@@ -48,7 +48,7 @@ function generateJWT(content, expiresIn, jwtKey, symmetric = true, privateEncryp
  * @returns {*} The decoded token
  */
 function verifyJWT(token, jwtKey){
-    const decodedToken = jwt.decode(token, { complete: true });
+    const decodedToken = jwt.decode(token, {complete: true});
     const symmetric = decodedToken.header.alg === "HS512";
     const algorithm = symmetric ? "HS512" : "RS512";
     return jwt.verify(token, jwtKey, {algorithms: algorithm});
@@ -131,7 +131,7 @@ async function decryptSymmetric(encryptedContent, encryptionKey, timeCost = 2000
  */
 function generateKeyPair(modulusLength = 4096, privateEncryptionKey = null){
     if(!privateEncryptionKey)
-        console.warn("No private encryption key provided, the private key will not be encrypted")
+        console.warn("No private encryption key provided, the private key will not be encrypted");
     let privateKeyEncodingOptions = {
         type: "pkcs8",
         format: "pem"
@@ -184,7 +184,7 @@ function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = 
             key: privateKey,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             passphrase: privateEncryptionKey
-    }, buffer).toString("utf-8");
+        }, buffer).toString("utf-8");
 }
 
 module.exports = {
