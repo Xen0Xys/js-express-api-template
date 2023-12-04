@@ -15,15 +15,24 @@ function getStatusColor(statusCode){
     }
 }
 
+function getCurrentTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `[${hours}:${minutes}:${seconds}]`;
+}
+
 module.exports = async(req, res, next) => {
     const startTime = Date.now();
     res.on("finish", () => {
+        const currentTime = getCurrentTime();
         const method = req.method;
         const path = req.originalUrl;
         const statusCode = getStatusColor(res.statusCode);
         const duration = Date.now() - startTime;
         const resSize = res.get("Content-Length");
-        console.log(`${method} ${path} ${statusCode} ${duration}ms ${resSize}`);
+        console.log(`${currentTime} ${method} ${path} ${statusCode} ${duration}ms ${resSize}`);
     });
     next();
 };
