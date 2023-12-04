@@ -29,12 +29,11 @@ function getSum(content){
  * @param symmetric True if the token encryption should be symmetric, false otherwise
  * @param jwtKey The private key
  * @param expiresIn The expiration time
+ * @param privateEncryptionKey
  * @returns {*} The JWT token
  */
-function generateJWT(content, symmetric = true, jwtKey = process.env.JWT_KEY, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY, expiresIn = process.env.TOKEN_DURATION){
+function generateJWT(content, expiresIn, jwtKey, symmetric = true, privateEncryptionKey = undefined){
     const algorithm = symmetric ? "HS512" : "RS512";
-    console.log(jwtKey);
-    console.log(privateEncryptionKey);
     if(symmetric)
         return jwt.sign(content, jwtKey, {expiresIn, algorithm});
     else
@@ -48,7 +47,9 @@ function generateJWT(content, symmetric = true, jwtKey = process.env.JWT_KEY, pr
  * @param jwtKey The private key
  * @returns {*} The decoded token
  */
-function verifyJWT(token, symmetric = true, jwtKey = process.env.JWT_KEY){
+function verifyJWT(token, jwtKey){
+    const decodedToken = jwt.decode(token, { complete: true });
+    const symmetric = decodedToken.header.alg === "HS512";
     const algorithm = symmetric ? "HS512" : "RS512";
     return jwt.verify(token, jwtKey, {algorithms: algorithm});
 }
@@ -85,7 +86,7 @@ async function comparePassword(hash, content){
  * @param timeCost The time cost
  * @returns The encrypted content
  */
-async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
+async function encryptSymmetric(content, encryptionKey, timeCost = 200000){
     content = stringify(content);
     const salt = crypto.randomBytes(32);
     const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, "sha512");
@@ -106,7 +107,7 @@ async function encryptSymmetric(content, encryptionKey = process.env.SYMMETRIC_E
  * @param timeCost The time cost
  * @returns The decrypted content
  */
-async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SYMMETRIC_ENCRYPTION_KEY, timeCost = 200000){
+async function decryptSymmetric(encryptedContent, encryptionKey, timeCost = 200000){
     const [saltString, ivString, encryptedString, digest] = encryptedContent.split(":");
     const salt = Buffer.from(saltString, "hex");
     const key = crypto.pbkdf2Sync(encryptionKey, salt, timeCost, 64, "sha512");
@@ -128,8 +129,9 @@ async function decryptSymmetric(encryptedContent, encryptionKey = process.env.SY
  * @param privateEncryptionKey The private encryption key
  * @returns {KeyPairSyncResult<string, string>} The key pair
  */
-function generateKeyPair(modulusLength = 4096, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
-    console.log("Keygen : " + privateEncryptionKey);
+function generateKeyPair(modulusLength = 4096, privateEncryptionKey = null){
+    if(!privateEncryptionKey)
+        console.warn("No private encryption key provided, the private key will not be encrypted")
     let privateKeyEncodingOptions = {
         type: "pkcs8",
         format: "pem"
@@ -170,14 +172,19 @@ function encryptAsymmetric(content, publicKey){
  * @param privateEncryptionKey The private encryption key
  * @returns {string} The decrypted content
  */
-function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = process.env.ASYMMETRIC_ENCRYPTION_KEY){
+function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = undefined){
     const buffer = Buffer.from(encryptedContent, "base64");
-    const decrypted = crypto.privateDecrypt({
-        key: privateKey,
-        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        passphrase: privateEncryptionKey
-    }, buffer);
-    return decrypted.toString("utf-8");
+    if(!privateEncryptionKey)
+        return crypto.privateDecrypt({
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING
+        }, buffer).toString("utf-8");
+    else
+        return crypto.privateDecrypt({
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            passphrase: privateEncryptionKey
+    }, buffer).toString("utf-8");
 }
 
 module.exports = {
