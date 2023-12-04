@@ -4,8 +4,8 @@ const jwt = require("jsonwebtoken");
 
 /**
  * Converts a content to a string
- * @param content The content to convert
- * @returns The stringify content
+ * @param {any} content The content to convert
+ * @returns {string} The stringify content
  */
 function stringify(content){
     if(!content) return "";
@@ -15,8 +15,8 @@ function stringify(content){
 
 /**
  * Gets the SHA-256 sum of a content
- * @param content The content to hash
- * @returns The SHA-256 sum
+ * @param {any} content The content to hash
+ * @returns {string} The SHA-256 sum
  */
 function getSum(content){
     content = stringify(content);
@@ -25,12 +25,12 @@ function getSum(content){
 
 /**
  * Generates a JWT token
- * @param content The content to sign
- * @param symmetric True if the token encryption should be symmetric, false otherwise
- * @param jwtKey The private key
- * @param expiresIn The expiration time
- * @param privateEncryptionKey
- * @returns {*} The JWT token
+ * @param {any} content The content to sign
+ * @param {number} expiresIn The expiration time in seconds
+ * @param {string} jwtKey The private key
+ * @param {boolean} [symmetric=true] True if the token encryption should be symmetric, false otherwise
+ * @param {string} [privateEncryptionKey] The private encryption key
+ * @returns {string} The JWT token
  */
 function generateJWT(content, expiresIn, jwtKey, symmetric = true, privateEncryptionKey = undefined){
     const algorithm = symmetric ? "HS512" : "RS512";
@@ -42,10 +42,9 @@ function generateJWT(content, expiresIn, jwtKey, symmetric = true, privateEncryp
 
 /**
  * Verifies a JWT token
- * @param token The token to verify
- * @param symmetric True if the token encryption should be symmetric, false otherwise
- * @param jwtKey The private key
- * @returns {*} The decoded token
+ * @param {string} token The token to verify
+ * @param {string} jwtKey The private key
+ * @returns {object} The decoded token
  */
 function verifyJWT(token, jwtKey){
     const decodedToken = jwt.decode(token, {complete: true});
@@ -56,9 +55,9 @@ function verifyJWT(token, jwtKey){
 
 /**
  * Hashes a content like passwords with Argon2
- * @param content The content to hash
- * @param cost The cost of the hash (default: 10)
- * @returns The hashed content
+ * @param {any} content The content to hash
+ * @param {number} [cost=10] The cost of the hash
+ * @returns {Promise<string>} The hashed content
  */
 async function hashPassword(content, cost = 10){
     content = stringify(content);
@@ -70,9 +69,9 @@ async function hashPassword(content, cost = 10){
 
 /**
  * Compares a hashed content with a plain text content
- * @param hash The hashed content
- * @param content The plain text content
- * @returns True if the content matches the hash, false otherwise
+ * @param {string} hash The hashed content
+ * @param {any} content The plain text content
+ * @returns {Promise<boolean>} True if the content matches the hash, false otherwise
  */
 async function comparePassword(hash, content){
     content = stringify(content);
@@ -81,10 +80,10 @@ async function comparePassword(hash, content){
 
 /**
  * Encrypts a content with AES-256-CBC
- * @param content The content to encrypt
- * @param encryptionKey The encryption key
- * @param timeCost The time cost
- * @returns The encrypted content
+ * @param {any} content The content to encrypt
+ * @param {string} encryptionKey The encryption key
+ * @param {number} [timeCost=200000] The time cost
+ * @returns {Promise<string>} The encrypted content
  */
 async function encryptSymmetric(content, encryptionKey, timeCost = 200000){
     content = stringify(content);
@@ -102,10 +101,10 @@ async function encryptSymmetric(content, encryptionKey, timeCost = 200000){
 
 /**
  * Decrypts a content with AES-256-CBC
- * @param encryptedContent The encrypted content
- * @param encryptionKey The encryption key
- * @param timeCost The time cost
- * @returns The decrypted content
+ * @param {string} encryptedContent The encrypted content
+ * @param {string} encryptionKey The encryption key
+ * @param {number} [timeCost=200000] The time cost
+ * @returns {Promise<string>} The decrypted content
  */
 async function decryptSymmetric(encryptedContent, encryptionKey, timeCost = 200000){
     const [saltString, ivString, encryptedString, digest] = encryptedContent.split(":");
@@ -125,9 +124,9 @@ async function decryptSymmetric(encryptedContent, encryptionKey, timeCost = 2000
 
 /**
  * Generates a key pair
- * @param modulusLength The modulus length
- * @param privateEncryptionKey The private encryption key
- * @returns {KeyPairSyncResult<string, string>} The key pair
+ * @param {number} [modulusLength=4096] The modulus length
+ * @param {string || null} [privateEncryptionKey] The private encryption key
+ * @returns {crypto.KeyPairSyncResult<string, string>} The key pair
  */
 function generateKeyPair(modulusLength = 4096, privateEncryptionKey = null){
     if(!privateEncryptionKey)
@@ -152,8 +151,8 @@ function generateKeyPair(modulusLength = 4096, privateEncryptionKey = null){
 
 /**
  * Encrypts a content with an asymmetric key
- * @param content The content to encrypt
- * @param publicKey The public key
+ * @param {any} content The content to encrypt
+ * @param {string} publicKey The public key
  * @returns {string} The encrypted content
  */
 function encryptAsymmetric(content, publicKey){
@@ -167,9 +166,9 @@ function encryptAsymmetric(content, publicKey){
 
 /**
  * Decrypts a content with an asymmetric key
- * @param encryptedContent The encrypted content
- * @param privateKey The private key
- * @param privateEncryptionKey The private encryption key
+ * @param {string} encryptedContent The encrypted content
+ * @param {string} privateKey The private key
+ * @param {string} [privateEncryptionKey] The private encryption key
  * @returns {string} The decrypted content
  */
 function decryptAsymmetric(encryptedContent, privateKey, privateEncryptionKey = undefined){
