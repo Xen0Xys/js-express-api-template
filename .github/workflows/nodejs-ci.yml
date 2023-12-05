@@ -12,7 +12,8 @@ jobs:
       matrix:
         node-version: [21]
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
         with:
           version: 8
@@ -23,8 +24,10 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - run: pnpm run lint
-      - run: pnpm run coverage
+      - name: Run linter
+        run: pnpm run lint
+      - name: Run tests and coverage
+        run: pnpm run coverage
   deploy:
     needs: test
     runs-on: ubuntu-latest

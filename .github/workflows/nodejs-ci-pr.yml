@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js PR CI
 
 on:
   pull_request:
@@ -23,5 +23,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - run: pnpm run lint
-      - run: pnpm run coverage
+      - name: Run linter
+        run: pnpm run lint
+      - name: Run tests and coverage
+        run: pnpm run coverage
