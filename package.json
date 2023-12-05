@@ -8,10 +8,8 @@
         "start": "node .",
         "lint": "eslint . --ext .json,.js",
         "lint:fix": "eslint . --ext .json,.js --fix",
-        "test": "NODE_ENV=test mocha src/tests --exit",
-        "test:win": "set NODE_ENV=test&& mocha src/tests --exit",
-        "coverage": "nyc pnpm run test",
-        "coverage:win": "nyc pnpm run test:win"
+        "test": "mocha src/tests --exit",
+        "coverage": "nyc pnpm run test"
     },
     "keywords": [],
     "author": "Xen0Xys",

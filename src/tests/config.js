@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 require("module-alias/register");
 const chaiHttp = require("chai-http");
 const {database: db, api} = require("@src/app");
