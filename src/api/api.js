@@ -67,14 +67,14 @@ function log(secure, bindAddress, port){
 function startServer(app){
     switch (process.env.SERVER_TYPE.toLowerCase()){
     case "http":
-        loadHttpServer(app, process.env.BIND_ADDRESS, process.env.PORT);
+        loadHttpServer(app, process.env.BIND_ADDRESS, process.env.HTTP_PORT);
         break;
     case "https":
-        loadHttpsServer(app, process.env.BIND_ADDRESS, process.env.PORT, process.env.SSL_KEY_FILE, process.env.SSL_CERT_FILE);
+        loadHttpsServer(app, process.env.BIND_ADDRESS, process.env.HTTPS_PORT, process.env.SSL_KEY_FILE, process.env.SSL_CERT_FILE);
         break;
     case "both":
-        loadHttpServer(app, process.env.BIND_ADDRESS, process.env.PORT);
-        loadHttpsServer(app, process.env.BIND_ADDRESS, process.env.PORT, process.env.SSL_KEY_FILE, process.env.SSL_CERT_FILE);
+        loadHttpServer(app, process.env.BIND_ADDRESS, process.env.HTTP_PORT);
+        loadHttpsServer(app, process.env.BIND_ADDRESS, process.env.HTTPS_PORT, process.env.SSL_KEY_FILE, process.env.SSL_CERT_FILE);
         break;
     default:
         throw new Error("Invalid SERVER_TYPE value");
