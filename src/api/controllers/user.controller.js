@@ -8,13 +8,13 @@ async function getUser(req, res){
     try{
         const user = await User.findOne({where: {id: userId}});
         if(!user)
-            return res.status(StatusCodes.NOT_FOUND).json({message: ReasonPhrases.NOT_FOUND});
+            return res.code(StatusCodes.NOT_FOUND).send({message: ReasonPhrases.NOT_FOUND});
         const jsonUser = user.toJSON();
         jsonUser.flag = await getFlag(jsonUser.countryCode);
         delete jsonUser.password;
-        return res.status(StatusCodes.OK).json(jsonUser);
+        return res.code(StatusCodes.OK).send(jsonUser);
     }catch (e){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+        return res.code(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
     }
 }
 
@@ -26,9 +26,9 @@ async function createUser(req, res){
         const jsonUser = user.toJSON();
         jsonUser.flag = await getFlag(jsonUser.countryCode);
         delete jsonUser.password;
-        return res.status(StatusCodes.CREATED).json(jsonUser);
+        return res.code(StatusCodes.CREATED).send(jsonUser);
     }catch (e){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+        return res.code(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
     }
 }
 
@@ -37,11 +37,11 @@ async function removeUser(req, res){
     try {
         const user = await User.findOne({where: {id}});
         if (!user)
-            return res.status(StatusCodes.NOT_FOUND).json({message: ReasonPhrases.NOT_FOUND});
+            return res.code(StatusCodes.NOT_FOUND).send({message: ReasonPhrases.NOT_FOUND});
         await user.destroy();
-        return res.status(StatusCodes.NO_CONTENT).json();
+        return res.code(StatusCodes.NO_CONTENT).send();
     }catch (e){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+        return res.code(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
     }
 }
 
@@ -53,9 +53,9 @@ async function getUsers(req, res){
             delete jsonUser.password;
             return jsonUser;
         });
-        return res.status(StatusCodes.OK).json(jsonUsers);
+        return res.code(StatusCodes.OK).send(jsonUsers);
     }catch (e){
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+        return res.code(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
     }
 }
 

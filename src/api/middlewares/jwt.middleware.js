@@ -5,18 +5,18 @@ const {verifyJWT} = require("../../lib/utils/encryption");
 module.exports = async(req, res, next) => {
     const authHeader = req.headers.authorization;
     if(!authHeader)
-        return res.status(StatusCodes.UNAUTHORIZED).json({message: "No token provided"});
+        return res.code(StatusCodes.UNAUTHORIZED).send({message: "No token provided"});
     const token = authHeader.split(" ")[1];
-    if(!token) return res.status(StatusCodes.UNAUTHORIZED).json({message: "No token provided"});
+    if(!token) return res.code(StatusCodes.UNAUTHORIZED).send({message: "No token provided"});
     let decodedToken;
     try{
         decodedToken = verifyJWT(token, process.env.JWT_KEY);
     }catch(e){
-        return res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid token", error: e});
+        return res.code(StatusCodes.UNAUTHORIZED).send({message: "Invalid token", error: e});
     }
-    if(!decodedToken) return res.status(StatusCodes.UNAUTHORIZED).json({message: "Invalid token"});
+    if(!decodedToken) return res.code(StatusCodes.UNAUTHORIZED).send({message: "Invalid token"});
     const user = await User.findOne({where: {id: decodedToken.id}});
-    if(!user) return res.status(StatusCodes.NOT_FOUND).json({message: "User not found"});
+    if(!user) return res.code(StatusCodes.NOT_FOUND).send({message: "User not found"});
     const jsonUser = user.toJSON();
     delete jsonUser.password;
     req.user = jsonUser;
