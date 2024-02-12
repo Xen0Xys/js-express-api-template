@@ -57,8 +57,8 @@ dependencies:
     specifier: ^3.0.3
     version: 3.0.3
   sequelize:
-    specifier: ^6.35.1
-    version: 6.35.1(mysql2@3.6.5)(sqlite3@5.1.6)
+    specifier: ^6.37.0
+    version: 6.37.0(mysql2@3.6.5)(sqlite3@5.1.6)
   sequelize-joi:
     specifier: ^2.0.1
     version: 2.0.1(mysql2@3.6.5)(sqlite3@5.1.6)
@@ -3125,7 +3125,7 @@ packages:
     resolution: {integrity: sha512-j6OEgWfMdL2ChbBLk+/FyDabOVikmIE+zET6BVJqRU2umjVUOT1XHjLYp9b5RedwFODLVnm8B04qHXuBsRkzxg==}
     dependencies:
       joi: 17.11.0
-      sequelize: 6.35.1(mysql2@3.6.5)(sqlite3@5.1.6)
+      sequelize: 6.37.0(mysql2@3.6.5)(sqlite3@5.1.6)
     transitivePeerDependencies:
       - ibm_db
       - mariadb
@@ -3144,8 +3144,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: false
 
-  /sequelize@6.35.1(mysql2@3.6.5)(sqlite3@5.1.6):
-    resolution: {integrity: sha512-UlP5k33nJsN11wCDLaWZXw9bB8w4ESKc5QmG6D04qMimwBwKVNeqRJiaaBlEJdtg8cRK+OJh95dliP+uEi+g9Q==}
+  /sequelize@6.37.0(mysql2@3.6.5)(sqlite3@5.1.6):
+    resolution: {integrity: sha512-MS6j6aXqWzB3fe9FhmfpQMgVC16bBdYroJCqIqR0l9M2ko8pZdKoi/0PiNWgMyFQDXUHxXyAOG3K07CbnOhteQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       ibm_db: '*'
